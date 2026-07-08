@@ -64,11 +64,9 @@ export type Project = {
 
 export const CONTENT = {
   subtitle: "Software Engineer",
-  about: `My journey in software began with a simple obsession: understanding how things work by taking them apart, and rebuilding them until they made sense. That obsession has since evolved into real hands-on experience designing production-grade systems, from core banking loan solutions to insurance expense platforms and campus-wide systems, always built with reliability, performance, and scale in mind.
+  about: `My journey in software began with a simple obsession: taking things apart to understand how they work, then rebuilding them until they made sense. That instinct has stayed with me. I find genuine satisfaction in turning ambiguous, messy requirements into clean, well-structured solutions, and in automating away the tedious parts of any workflow. I am drawn, in particular, to the architecture beneath a system: how its pieces fit together, and how to make them work well as a whole. My specialty is backend engineering, though I move comfortably across the stack into frontend work, and I remain equally drawn to Machine Learning and AI, finding the space where these disciplines meet especially compelling.
   
-I have a genuine passion for turning ambiguous, messy requirements into clean, well-structured solutions, and I take real satisfaction in automating away the tedious parts of any workflow. While backend architecture is where I specialize, I'm equally drawn to Machine Learning and AI, and I enjoy exploring the space where the two intersect.
-
-Beyond the screen, I'm an introvert with a deep appreciation for traveling and being in nature, there's something quietly powerful about standing somewhere new and simply taking it in. I'm also a creator at heart, drawing and building small open-source tools in my spare time. My biggest dream is to travel the world, one meaningful place at a time.`,
+Beyond the screen, I am an introvert with a quiet curiosity about how the world works. Few things fascinate me more than space, which is why this portfolio takes its shape from a warp speed theme, a passage through the vastness of it all. I hold a similar appreciation for travel and time spent in nature; there is something quietly powerful about standing somewhere new and simply taking it in. I am a creator at heart as well, drawing and building small open-source tools in whatever spare time I can find. My deepest ambition is to travel the world, one meaningful place at a time.`,
   sections: {
     services: {
       title: "Freelance Services",
