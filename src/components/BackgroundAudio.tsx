@@ -55,7 +55,7 @@ export function BackgroundAudio() {
       {/* Indicator when not playing */}
       {!isPlaying && !hasError && (
         <span className="absolute right-14 top-1/2 -translate-y-1/2 text-xs font-medium whitespace-nowrap bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white/90 animate-pulse pointer-events-none">
-          Enable audio for full experience
+          Click to enable audio
         </span>
       )}
 

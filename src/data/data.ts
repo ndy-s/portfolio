@@ -4,24 +4,40 @@ import {
   SiGo,
   SiTypescript,
   SiJavascript,
+  SiHtml5,
+  SiSpringboot,
+  SiNodedotjs,
+  SiExpress,
   SiReact,
   SiNextdotjs,
   SiVuedotjs,
-  SiNodedotjs,
-  SiSpringboot,
   SiLaravel,
+  SiRabbitmq,
+  SiPytorch,
+  SiApachespark,
   SiDocker,
   SiKubernetes,
+  SiJenkins,
+  SiElasticsearch,
   SiPostgresql,
+  SiMongodb,
   SiGooglecloud,
+  SiApachekafka,
 } from "react-icons/si";
-import { FaJava, FaAws } from "react-icons/fa";
+import { FaJava, FaAws, FaDatabase, FaBrain, FaRobot, FaSync } from "react-icons/fa";
+import { GrOracle } from "react-icons/gr";
 
 export type Experience = {
   title: string;
   company: string;
   date: string;
   link?: string;
+};
+
+export type Service = {
+  title: string;
+  description: string;
+  icon: string;
 };
 
 export type Technology = {
@@ -48,15 +64,15 @@ export type Project = {
 
 export const CONTENT = {
   subtitle: "Software Engineer",
-  about: `I build things that work well and scale, from core banking systems processing thousands of loan applications to campus-wide platforms serving entire universities. Over the past 2+ years, I've turned a curiosity for breaking and understanding software into real production impact.
+  about: `My journey in software began with a simple obsession: understanding how things work by taking them apart, and rebuilding them until they made sense. That obsession has since evolved into real hands-on experience designing production-grade systems, from core banking loan solutions to insurance expense platforms and campus-wide systems, always built with reliability, performance, and scale in mind.
+  
+I have a genuine passion for turning ambiguous, messy requirements into clean, well-structured solutions, and I take real satisfaction in automating away the tedious parts of any workflow. While backend architecture is where I specialize, I'm equally drawn to Machine Learning and AI, and I enjoy exploring the space where the two intersect.
 
-Currently a Software Engineer at Next TI (Hana Financial Group), I specialize in backend architecture, API orchestration, and performance optimization. I've cut API response times from 40s to 2s, designed multi-bank payment integrations, and built automated loan workflows from scratch.
-
-Outside of my full-time role, I take on freelance projects to help businesses build reliable, modern web applications. Whether you need a performant backend, a clean full-stack product, or a custom internal tool, I'd love to hear about it. I also explore Deep Learning, Computer Vision, and NLP at the intersection of Software Engineering and ML.`,
+Beyond the screen, I'm an introvert with a deep appreciation for traveling and being in nature, there's something quietly powerful about standing somewhere new and simply taking it in. I'm also a creator at heart, drawing and building small open-source tools in my spare time. My biggest dream is to travel the world, one meaningful place at a time.`,
   sections: {
-    services: { 
-      title: "Freelance Services", 
-      subtitle: "How I can help your business build and scale." 
+    services: {
+      title: "Freelance Services",
+      subtitle: "How I can help your business build and scale."
     },
     experience: { title: "Work Experience", subtitle: "" },
     technologies: { title: "Technologies", subtitle: "" },
@@ -74,6 +90,23 @@ export const DATA = {
   email: "hendys.work@gmail.com",
   github: "https://github.com/ndy-s",
   linkedin: "https://www.linkedin.com/in/hendy-saputra/",
+  services: [
+    {
+      title: "App Development",
+      description: "I design and build mobile, desktop, and web applications from concept to launch, engineered for performance and long-term scalability.",
+      icon: "📱"
+    },
+    {
+      title: "Work Automation",
+      description: "I help businesses eliminate repetitive manual processes through custom automation, reducing errors and freeing up time for high-value work.",
+      icon: "⚙️"
+    },
+    {
+      title: "AI Integration",
+      description: "I implement practical AI capabilities into products and operations, delivering real improvements in efficiency and customer experience.",
+      icon: "✨"
+    }
+  ] as Service[],
   experience: [
     {
       title: "Software Engineer",
@@ -112,17 +145,31 @@ export const DATA = {
     { name: "Go", icon: SiGo },
     { name: "TypeScript", icon: SiTypescript },
     { name: "JavaScript", icon: SiJavascript },
-    { name: "React", icon: SiReact },
+    { name: "SQL", icon: FaDatabase },
+    { name: "HTML/CSS", icon: SiHtml5 },
+    { name: "Spring", icon: SiSpringboot },
+    { name: "Node.js", icon: SiNodedotjs },
+    { name: "Express.js", icon: SiExpress },
+    { name: "React.js", icon: SiReact },
     { name: "Next.js", icon: SiNextdotjs },
     { name: "Vue.js", icon: SiVuedotjs },
-    { name: "Node.js", icon: SiNodedotjs },
-    { name: "Spring Boot", icon: SiSpringboot },
     { name: "Laravel", icon: SiLaravel },
-    { name: "Docker", icon: SiDocker },
-    { name: "Kubernetes", icon: SiKubernetes },
-    { name: "PostgreSQL", icon: SiPostgresql },
+    // { name: "Kafka", icon: SiApachekafka },
+    { name: "RabbitMQ", icon: SiRabbitmq },
+    { name: "PyTorch", icon: SiPytorch },
+    { name: "LangChain", icon: FaRobot },
+    { name: "PySpark", icon: SiApachespark },
+    { name: "Deep Learning", icon: FaBrain },
     { name: "AWS", icon: FaAws },
     { name: "GCP", icon: SiGooglecloud },
+    { name: "Docker", icon: SiDocker },
+    { name: "Kubernetes", icon: SiKubernetes },
+    { name: "CI/CD", icon: FaSync },
+    { name: "Jenkins", icon: SiJenkins },
+    { name: "Elastic Stack", icon: SiElasticsearch },
+    { name: "PostgreSQL", icon: SiPostgresql },
+    { name: "Oracle", icon: GrOracle },
+    { name: "MongoDB", icon: SiMongodb },
   ] as Technology[],
 };
 
@@ -139,41 +186,5 @@ export const PROJECTS: Project[] = [
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
     github: "https://github.com/ndy-s",
     demo: "https://github.com/ndy-s",
-  },
-  {
-    title: "Sentiment Analysis with LLMs",
-    description: "Fine-tuned Transformer-based LLMs on large-scale student feedback data for NLP sentiment analysis research.",
-    details: [
-      "Pre-processed and cleaned massive datasets of student feedback.",
-      "Fine-tuned pre-trained Transformer models (BERT, RoBERTa) using PyTorch and Hugging Face.",
-      "Achieved high accuracy in categorizing student sentiment to improve institutional feedback loops.",
-      "Published research findings in an academic journal."
-    ],
-    tags: ["Python", "PyTorch", "Hugging Face"],
-    github: "https://github.com/ndy-s",
-  },
-  {
-    title: "Payment Gateway Integration",
-    description: "Developed a multi-bank payment gateway integration, reducing onboarding time per banking partner by ~33%.",
-    details: [
-      "Architected a unified payment API abstraction layer for multiple banking providers.",
-      "Implemented secure transaction processing, webhook handling, and status reconciliation.",
-      "Utilized RabbitMQ for reliable asynchronous message queues to handle high loads.",
-      "Reduced integration friction and partner onboarding time significantly."
-    ],
-    tags: ["PHP", "Laravel", "RabbitMQ"],
-    github: "https://github.com/ndy-s",
-  },
-  {
-    title: "Core Banking Optimization",
-    description: "Identified and resolved a critical core banking performance bottleneck across API and SQL layers.",
-    details: [
-      "Conducted deep analysis of API latency and SQL execution plans under high traffic.",
-      "Implemented strategic indexing and query optimization, reducing response latency from ~40s to ~2s.",
-      "Designed autonomous loan workflows using API orchestration and async batch processing.",
-      "Enabled straight-through processing for the majority of loan applications."
-    ],
-    tags: ["Java", "Spring Boot", "PostgreSQL"],
-    github: "https://github.com/ndy-s",
   },
 ];

@@ -12,10 +12,10 @@ export default function Home() {
     <main>
       <Header />
       <About />
-      <Services />
       <WorkExperience />
       <Technologies />
       <Projects />
+      <Services />
       <Connect />
       <Footer />
     </main>

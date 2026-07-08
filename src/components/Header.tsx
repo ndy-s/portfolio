@@ -26,31 +26,29 @@ export function Header() {
   }, [textToType])
 
   return (
-    <header className="mb-16 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <Link href="/" className="font-medium text-foreground hover:opacity-80 transition-opacity">
-          Hendy Saputra
-        </Link>
-        <p className="text-muted text-sm mt-1 h-5">
-          {typedText}
-          <motion.span
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ repeat: Infinity, duration: 0.8 }}
-            className="inline-block w-[2px] h-3 bg-muted ml-0.5"
-          />
-        </p>
-      </div>
+    <header className="mb-16">
       <div className="flex items-center gap-4">
-        <a 
-          href="#connect"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="px-4 py-2 text-sm font-medium bg-foreground text-background rounded-full hover:opacity-90 transition-opacity shadow-sm"
-        >
-          Hire Me
-        </a>
+        <motion.img
+          src="/images/profile.jpg"
+          alt="Hendy Saputra"
+          className="w-16 h-16 rounded-full border border-neutral-200 dark:border-neutral-800 object-cover shadow-sm"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        />
+        <div>
+          <Link href="/" className="font-medium text-lg text-foreground hover:opacity-80 transition-opacity">
+            Hendy Saputra
+          </Link>
+          <p className="text-muted text-sm mt-1 h-5">
+            {typedText}
+            <motion.span
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 0.8 }}
+              className="inline-block w-[2px] h-3 bg-muted ml-0.5"
+            />
+          </p>
+        </div>
       </div>
     </header>
   )

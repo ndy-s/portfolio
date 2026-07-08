@@ -60,7 +60,7 @@ export function CosmicHelp() {
                     Cosmic Sandbox
                   </h2>
                   <p className="text-sm text-muted">
-                    This background isn&apos;t just a video&mdash;it&apos;s a live physics simulation! Here is what you can do:
+                    This background isn't just a video, it's a live physics simulation! Here is what you can do:
                   </p>
                 </div>
                 <button
@@ -116,7 +116,7 @@ export function CosmicHelp() {
                 onClick={() => setIsOpen(false)}
                 className="mt-6 w-full py-3 bg-foreground text-background font-medium rounded-xl hover:opacity-90 transition-opacity text-sm"
               >
-                Got it, let&apos;s explore!
+                Got it, let's explore!
               </button>
             </motion.div>
           </div>

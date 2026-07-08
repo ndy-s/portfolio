@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export function WorkExperience() {
   const [showAll, setShowAll] = useState(false)
-  
+
   const section = CONTENT.sections.experience
   const INITIAL_COUNT = 3
   const visibleExperience = showAll ? DATA.experience : DATA.experience.slice(0, INITIAL_COUNT)
@@ -24,19 +24,19 @@ export function WorkExperience() {
         const ctx = new AudioContextClass()
         const osc = ctx.createOscillator()
         const gain = ctx.createGain()
-        
+
         osc.type = 'sine'
         const now = ctx.currentTime
         osc.frequency.setValueAtTime(600, now)
         osc.frequency.exponentialRampToValueAtTime(300, now + 0.3)
-        
+
         gain.gain.setValueAtTime(0, now)
         gain.gain.linearRampToValueAtTime(0.2, now + 0.05)
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3)
-        
+
         osc.connect(gain)
         gain.connect(ctx.destination)
-        
+
         osc.start(now)
         osc.stop(now + 0.3)
       }
@@ -65,7 +65,7 @@ export function WorkExperience() {
               exit={{ opacity: 0, y: 5, scale: 0.9 }}
               className="absolute bottom-full mb-2 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-white text-black text-xs font-bold px-3 py-2 rounded-2xl shadow-lg border-2 border-black whitespace-normal text-center min-w-[140px] max-w-[200px] comic-bubble origin-bottom-right sm:origin-bottom"
             >
-              Hire this engineer, you must! *coos*
+              Overcome the impossible, together we will. *coos*
               <div className="absolute top-full right-6 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-white drop-shadow-sm"></div>
             </motion.div>
           )}
@@ -92,8 +92,7 @@ export function WorkExperience() {
               transition={{ duration: 0.3 }}
               className="group relative"
             >
-              <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-neutral-200 to-neutral-200 dark:from-neutral-800 dark:to-neutral-800 opacity-0 group-hover:opacity-100 transition duration-300 blur-sm"></div>
-              <div className="relative h-full w-full rounded-2xl bg-card border p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="relative h-full w-full rounded-2xl bg-card border p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 transition-all duration-300 group-hover:border-neutral-400 dark:group-hover:border-neutral-500 group-hover:shadow-md group-hover:-translate-y-1">
                 <div>
                   <h4 className="font-medium text-foreground">{job.title}</h4>
                   <p className="text-muted text-sm">{job.company}</p>
@@ -104,7 +103,7 @@ export function WorkExperience() {
           ))}
         </AnimatePresence>
       </div>
-      
+
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}

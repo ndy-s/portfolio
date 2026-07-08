@@ -1,4 +1,4 @@
-# Hendy Saputra — Developer Portfolio
+# Portfolio
 
 A personal portfolio website with an interactive physics-based cosmic background simulation. Built with Next.js 16, TypeScript, and Framer Motion. Features real-time gravitational N-body simulation, 3D star field rendering, procedural nebulae, comets, and draggable celestial bodies, all running on an HTML5 Canvas.
 
@@ -6,16 +6,16 @@ A personal portfolio website with an interactive physics-based cosmic background
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org/) (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS (utility classes) + CSS Variables |
-| Animations | [Framer Motion](https://www.framer.com/motion/) |
-| Physics Sim | Custom, HTML5 Canvas + `requestAnimationFrame` |
-| Icons | `react-icons` (Simple Icons, Font Awesome) |
-| Theming | `next-themes` |
-| Font | Inter (Google Fonts via `next/font`) |
+| Layer       | Technology                                      |
+| -------------| -------------------------------------------------|
+| Framework   | [Next.js 16](https://nextjs.org/) (App Router)  |
+| Language    | TypeScript                                      |
+| Styling     | Tailwind CSS (utility classes) + CSS Variables  |
+| Animations  | [Framer Motion](https://www.framer.com/motion/) |
+| Physics Sim | Custom, HTML5 Canvas + `requestAnimationFrame`  |
+| Icons       | `react-icons` (Simple Icons, Font Awesome)      |
+| Theming     | `next-themes`                                   |
+| Font        | Inter (Google Fonts via `next/font`)            |
 
 ---
 
@@ -466,4 +466,3 @@ CSS variables are defined in `globals.css` for both modes:
 ## License
 
 MIT © Hendy Saputra
-# portfolio

@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Hendy Saputra | Software Engineer",
+  title: "Hendy Saputra",
   description: "Portfolio of Hendy Saputra, a Software Engineer specializing in backend architecture, API orchestration, and full-stack development. Available for freelance.",
 };
 
@@ -30,7 +30,7 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
+          enableSystem={true}
           disableTransitionOnChange
         >
           <StarField />

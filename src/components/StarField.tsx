@@ -185,14 +185,14 @@ function generateBody(width: number, height: number): CelestialBody {
 
 export function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  
+
   const starsRef = useRef<Star[]>([])
   const bodiesRef = useRef<CelestialBody[]>([])
   const cometsRef = useRef<Comet[]>([])
   const shootingStarsRef = useRef<ShootingStar[]>([])
   const nebulaeRef = useRef<NebulaCloud[]>([])
   const particlesRef = useRef<CollisionParticle[]>([])
-  
+
   const dragStateRef = useRef<{
     activeBodyId: number | null
     offsetX: number
@@ -204,11 +204,11 @@ export function StarField() {
     offsetY: 0,
     velocityQueue: [],
   })
-  
+
   const animFrameRef = useRef<number>(0)
   const lastCometTimeRef = useRef(0)
   const lastShootingStarTimeRef = useRef(0)
-  
+
   const { resolvedTheme } = useTheme()
   const themeRef = useRef(resolvedTheme)
   const mountedRef = useRef(false)
@@ -231,23 +231,26 @@ export function StarField() {
     try {
       const ctx = getAudioCtx()
       if (ctx.state === 'suspended') ctx.resume()
-      
+
       const now = ctx.currentTime
       const duration = 0.3 + intensity * 0.4
-      
+
       // Low boom
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.type = 'sine'
-      osc.frequency.setValueAtTime(80 + intensity * 40, now)
-      osc.frequency.exponentialRampToValueAtTime(30, now + duration)
-      gain.gain.setValueAtTime(Math.min(intensity * 0.1, 0.15), now) // Lowered from 0.2
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration)
+
+      osc.frequency.value = 80 + intensity * 40
+      osc.frequency.setTargetAtTime(30, now, duration * 0.2)
+
+      gain.gain.value = Math.min(intensity * 0.25, 0.4)
+      gain.gain.setTargetAtTime(0.001, now, duration * 0.2)
+
       osc.connect(gain)
       gain.connect(ctx.destination)
       osc.start(now)
       osc.stop(now + duration)
-      
+
       // Crackle noise
       const bufferSize = Math.floor(ctx.sampleRate * duration * 0.5)
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
@@ -258,8 +261,10 @@ export function StarField() {
       const noise = ctx.createBufferSource()
       const noiseGain = ctx.createGain()
       noise.buffer = noiseBuffer
-      noiseGain.gain.setValueAtTime(Math.min(intensity * 0.05, 0.08), now) // Lowered from 0.12
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.5)
+
+      noiseGain.gain.value = Math.min(intensity * 0.15, 0.2)
+      noiseGain.gain.setTargetAtTime(0.001, now, duration * 0.1)
+
       noise.connect(noiseGain)
       noiseGain.connect(ctx.destination)
       noise.start(now)
@@ -273,17 +278,20 @@ export function StarField() {
     try {
       const ctx = getAudioCtx()
       if (ctx.state === 'suspended') ctx.resume()
-      
+
+      const now = ctx.currentTime
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.type = 'sine'
-      osc.frequency.setValueAtTime(60, ctx.currentTime)
-      gain.gain.setValueAtTime(0, ctx.currentTime)
-      gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.1)
+      osc.frequency.setValueAtTime(60, now)
+
+      gain.gain.value = 0
+      gain.gain.setTargetAtTime(0.06, now, 0.05)
+
       osc.connect(gain)
       gain.connect(ctx.destination)
-      osc.start()
-      
+      osc.start(now)
+
       dragOscRef.current = osc
       dragGainRef.current = gain
     } catch {
@@ -295,8 +303,9 @@ export function StarField() {
   const updateDragSound = useCallback((velocity: number) => {
     if (dragOscRef.current && dragGainRef.current) {
       const ctx = getAudioCtx()
-      dragOscRef.current.frequency.setTargetAtTime(60 + velocity * 8, ctx.currentTime, 0.05)
-      dragGainRef.current.gain.setTargetAtTime(Math.min(0.04 + velocity * 0.005, 0.1), ctx.currentTime, 0.05)
+      const now = ctx.currentTime
+      dragOscRef.current.frequency.setTargetAtTime(60 + velocity * 8, now, 0.05)
+      dragGainRef.current.gain.setTargetAtTime(Math.min(0.06 + velocity * 0.01, 0.15), now, 0.05)
     }
   }, [getAudioCtx])
 
@@ -305,7 +314,7 @@ export function StarField() {
     try {
       if (dragOscRef.current && dragGainRef.current) {
         const ctx = getAudioCtx()
-        dragGainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.15)
+        dragGainRef.current.gain.setTargetAtTime(0, ctx.currentTime, 0.05)
         const osc = dragOscRef.current
         setTimeout(() => {
           try { osc.stop() } catch { /* already stopped */ }
@@ -325,10 +334,10 @@ export function StarField() {
       window.removeEventListener('pointerdown', handleFirstInteraction)
       window.removeEventListener('keydown', handleFirstInteraction)
     }
-    
+
     window.addEventListener('pointerdown', handleFirstInteraction)
     window.addEventListener('keydown', handleFirstInteraction)
-    
+
     return () => {
       window.removeEventListener('pointerdown', handleFirstInteraction)
       window.removeEventListener('keydown', handleFirstInteraction)
@@ -445,7 +454,7 @@ export function StarField() {
   }, [])
 
   // ─── Interaction Handlers ────────────────────────────────────────────────────
-  
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -457,7 +466,7 @@ export function StarField() {
         y: e.clientY - rect.top
       }
     }
-    
+
     // Helper to compute screen pos and radius
     const getScreenBody = (body: CelestialBody) => {
       const w = canvas.width / (window.devicePixelRatio || 1)
@@ -473,34 +482,34 @@ export function StarField() {
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.target !== canvas) return
-      
+
       const { x, y } = getPointerPos(e)
       const bodies = bodiesRef.current
-      
+
       for (let i = bodies.length - 1; i >= 0; i--) {
         const body = bodies[i]
         const { bx, by, projSize } = getScreenBody(body)
-        const hitRadius = Math.max(projSize, 15) 
+        const hitRadius = Math.max(projSize, 15)
         const dist = Math.hypot(bx - x, by - y)
-        
+
         if (dist <= hitRadius) {
           body.isDragging = true
           body.vx = 0
           body.vy = 0
-          
+
           startDragSound()
-          
+
           dragStateRef.current = {
             activeBodyId: body.id,
             offsetX: bx - x,
             offsetY: by - y,
             velocityQueue: [],
           }
-          
+
           // Move body to end of array to render it on top
           bodies.splice(i, 1)
           bodies.push(body)
-          
+
           canvas.setPointerCapture(e.pointerId)
           canvas.style.cursor = "grabbing"
           break
@@ -513,8 +522,8 @@ export function StarField() {
       if (state.activeBodyId === null) {
         const { x, y } = getPointerPos(e)
         const isHovering = bodiesRef.current.some(b => {
-            const { bx, by, projSize } = getScreenBody(b)
-            return Math.hypot(bx - x, by - y) <= Math.max(projSize, 15)
+          const { bx, by, projSize } = getScreenBody(b)
+          return Math.hypot(bx - x, by - y) <= Math.max(projSize, 15)
         })
         canvas.style.cursor = isHovering ? "grab" : "default"
         return
@@ -522,26 +531,26 @@ export function StarField() {
 
       const { x, y } = getPointerPos(e)
       const body = bodiesRef.current.find(b => b.id === state.activeBodyId)
-      
+
       if (body) {
         const { w, h, cx, cy } = getScreenBody(body)
-        
+
         const targetScreenX = x + state.offsetX
         const targetScreenY = y + state.offsetY
-        
+
         const oldWorldX = body.x
         const oldWorldY = body.y
-        
+
         // Inverse 3D projection to find world coordinates
         body.x = (targetScreenX - cx) * body.z / (w / 4)
         body.y = (targetScreenY - cy) * body.z / (h / 4)
-        
+
         // Track velocity in world space
         const dx = body.x - oldWorldX
         const dy = body.y - oldWorldY
         state.velocityQueue.push({ dx, dy })
         if (state.velocityQueue.length > 5) state.velocityQueue.shift()
-        
+
         updateDragSound(Math.hypot(dx, dy))
       }
     }
@@ -553,7 +562,7 @@ export function StarField() {
         const body = bodiesRef.current.find(b => b.id === state.activeBodyId)
         if (body) {
           body.isDragging = false
-          
+
           if (state.velocityQueue.length > 0) {
             let sumX = 0, sumY = 0
             for (const v of state.velocityQueue) {
@@ -562,20 +571,20 @@ export function StarField() {
             }
             const avgX = sumX / state.velocityQueue.length
             const avgY = sumY / state.velocityQueue.length
-            
+
             body.vx = Math.min(Math.max(avgX * 0.8, -MAX_VELOCITY), MAX_VELOCITY)
             body.vy = Math.min(Math.max(avgY * 0.8, -MAX_VELOCITY), MAX_VELOCITY)
           }
         }
-        
+
         state.activeBodyId = null
         state.velocityQueue = []
         canvas.releasePointerCapture(e.pointerId)
-        
+
         const { x, y } = getPointerPos(e)
         const isHovering = bodiesRef.current.some(b => {
-            const { bx, by, projSize } = getScreenBody(b)
-            return Math.hypot(bx - x, by - y) <= Math.max(projSize, 15)
+          const { bx, by, projSize } = getScreenBody(b)
+          return Math.hypot(bx - x, by - y) <= Math.max(projSize, 15)
         })
         canvas.style.cursor = isHovering ? "grab" : "default"
       }
@@ -631,7 +640,7 @@ export function StarField() {
       const w = window.innerWidth
       const h = window.innerHeight
       const isDark = themeRef.current === "dark"
-      
+
       ctx.fillStyle = isDark ? "#000000" : "#ffffff"
       ctx.fillRect(0, 0, w, h)
 
@@ -740,30 +749,30 @@ export function StarField() {
       // ── Celestial Bodies (Physics) ──
       const bodies = bodiesRef.current
       const toRemove: number[] = [] // indices to remove after collision
-      
+
       for (let i = 0; i < bodies.length; i++) {
         const body = bodies[i]
-        
+
         // Z-axis movement (warp speed) - skip for dragged bodies
         if (!body.isDragging) {
           body.z -= speed * dt * 0.2
           body.vx *= FRICTION
           body.vy *= FRICTION
-          
+
           body.x += body.vx * dt
           body.y += body.vy * dt
         }
-        
+
         // Collision detection - absorption instead of bounce
         for (let j = i + 1; j < bodies.length; j++) {
           if (toRemove.includes(i) || toRemove.includes(j)) continue
-          
+
           const other = bodies[j]
           const dx = other.x - body.x
           const dy = other.y - body.y
           const dist = Math.hypot(dx, dy)
           const minDist = body.radius + other.radius
-          
+
           // Apply gravity
           if (dist > minDist * 0.7 && dist < w * 1.5) { // apply gravity if within influence range
             const force = GRAVITY_CONSTANT / Math.max(dist * dist, 10)
@@ -776,25 +785,25 @@ export function StarField() {
               other.vy -= (dy / dist) * force * body.mass * dt
             }
           }
-          
+
           if (dist < minDist * 0.7) {
             // Collision! Bigger absorbs smaller
             const bigger = body.mass >= other.mass ? body : other
             const smaller = body.mass >= other.mass ? other : body
             const smallerIdx = body.mass >= other.mass ? j : i
-            
+
             // Skip if dragging the smaller one (don't destroy what user is holding)
             if (smaller.isDragging) continue
-            
+
             // Play collision sound based on combined mass
             playCollisionSound(Math.min((bigger.mass + smaller.mass) / 3000, 1.0))
-            
+
             // Spawn debris particles at collision point
             const collisionX = (body.x + other.x) / 2
             const collisionY = (body.y + other.y) / 2
             const collisionZ = (body.z + other.z) / 2
             const debrisCount = Math.floor(Math.random() * 8 + 6)
-            
+
             for (let p = 0; p < debrisCount; p++) {
               const angle = (p / debrisCount) * Math.PI * 2 + Math.random() * 0.5
               const spd = Math.random() * 3 + 1.5
@@ -809,20 +818,20 @@ export function StarField() {
                 color: smaller.color === "0, 0, 0" ? "255, 200, 100" : smaller.color,
               })
             }
-            
+
             // Bigger body absorbs smaller: grow in mass and radius
             const newMass = bigger.mass + smaller.mass * 0.3
             bigger.radius = Math.sqrt(newMass / Math.PI)
             bigger.mass = newMass
-            
+
             // Inherit some momentum from the smaller body
             const totalMass = bigger.mass + smaller.mass
             bigger.vx = (bigger.vx * bigger.mass + smaller.vx * smaller.mass) / totalMass
             bigger.vy = (bigger.vy * bigger.mass + smaller.vy * smaller.mass) / totalMass
-            
+
             // Mark smaller for removal
             toRemove.push(smallerIdx)
-            
+
             // If dragging the bigger, keep drag state
             if (dragStateRef.current.activeBodyId === smaller.id) {
               dragStateRef.current.activeBodyId = null
@@ -830,10 +839,10 @@ export function StarField() {
             }
           }
         }
-        
+
         body.rotation += body.rotationSpeed * (Math.hypot(body.vx, body.vy) * 0.1 + 1) * dt
       }
-      
+
       // Remove absorbed bodies (reverse order to keep indices valid)
       if (toRemove.length > 0) {
         const sorted = [...new Set(toRemove)].sort((a, b) => b - a)
@@ -855,25 +864,25 @@ export function StarField() {
         const by = (body.y / body.z) * (h / 4) + cy
         const depthFactor = 1 - body.z / MAX_DEPTH
         const projSize = body.radius * depthFactor
-        
+
         // Respawn if passed the camera or went way off screen (but never while dragging)
         if (!body.isDragging && (body.z <= 10 || bx < -w || bx > w * 2 || by < -h || by > h * 2)) {
-            const newBody = generateBody(w, h)
-            const oldId = body.id
-            Object.assign(body, newBody)
-            body.id = oldId // keep original id
-            body.z = MAX_DEPTH
-            if (dragStateRef.current.activeBodyId === oldId) {
-                dragStateRef.current.activeBodyId = null
-                canvasRef.current?.style.setProperty('cursor', 'default')
-            }
-            continue // skip drawing this frame
+          const newBody = generateBody(w, h)
+          const oldId = body.id
+          Object.assign(body, newBody)
+          body.id = oldId // keep original id
+          body.z = MAX_DEPTH
+          if (dragStateRef.current.activeBodyId === oldId) {
+            dragStateRef.current.activeBodyId = null
+            canvasRef.current?.style.setProperty('cursor', 'default')
+          }
+          continue // skip drawing this frame
         }
-        
+
         ctx.save()
         ctx.translate(bx, by)
         ctx.rotate(body.rotation)
-        
+
         if (body.isDragging) {
           ctx.beginPath()
           ctx.arc(0, 0, projSize + 4, 0, Math.PI * 2)
@@ -934,14 +943,14 @@ export function StarField() {
             diskGrad.addColorStop(0, `rgba(${body.ringColor}, ${alpha})`)
             diskGrad.addColorStop(0.5, `rgba(${body.ringColor}, ${alpha * 0.4})`)
             diskGrad.addColorStop(1, "rgba(0,0,0,0)")
-            
+
             ctx.save()
             ctx.scale(1, 0.25)
             ctx.beginPath()
             ctx.arc(0, 0, r * 3, 0, Math.PI * 2)
             ctx.fillStyle = diskGrad
             ctx.fill()
-            
+
             ctx.beginPath()
             ctx.arc(0, 0, r * 2.2, 0, Math.PI * 2)
             ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.6})`
@@ -949,7 +958,7 @@ export function StarField() {
             ctx.stroke()
             ctx.restore()
           }
-          
+
           ctx.beginPath()
           ctx.arc(0, 0, r, 0, Math.PI * 2)
           ctx.fillStyle = `rgba(0, 0, 0, ${Math.min(alpha * 2, 1)})`
@@ -1046,7 +1055,7 @@ export function StarField() {
 
         const tailX = comet.x - comet.vx * comet.tailLength * 0.3
         const tailY = comet.y - comet.vy * comet.tailLength * 0.3
-        
+
         const tailGrad = ctx.createLinearGradient(comet.x, comet.y, tailX, tailY)
         tailGrad.addColorStop(0, `rgba(${comet.color}, ${a * 0.8})`)
         tailGrad.addColorStop(1, `rgba(${comet.color}, 0)`)
@@ -1078,7 +1087,7 @@ export function StarField() {
         ss.life += dt
 
         if (ss.life >= ss.maxLife) return false
-        
+
         const lifeRatio = ss.life / ss.maxLife
         const a = (1 - lifeRatio) * (isDark ? 0.9 : 0.3)
         const trailLen = 25

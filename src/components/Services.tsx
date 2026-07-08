@@ -1,29 +1,13 @@
 "use client"
 
-import { CONTENT } from "@/data/data"
+import { CONTENT, DATA } from "@/data/data"
 import { AnimatedSection } from "./AnimatedSection"
 import { motion } from "framer-motion"
 
 export function Services() {
   const section = CONTENT.sections.services
 
-  const currentServices = [
-    {
-      title: "Full-Stack Web Development",
-      description: "End-to-end development of fast, responsive, and beautifully designed web applications using modern stacks like Next.js, React, and Tailwind CSS.",
-      icon: "💻"
-    },
-    {
-      title: "Backend Architecture",
-      description: "Designing and building robust, scalable APIs and microservices. Expertise in Node.js, Go, Python, and SQL/NoSQL database modeling.",
-      icon: "⚙️"
-    },
-    {
-      title: "API Integrations & Automation",
-      description: "Connecting disparate systems, building payment gateways, and automating complex business workflows for improved efficiency.",
-      icon: "🔗"
-    }
-  ]
+  const currentServices = DATA.services
 
   return (
     <AnimatedSection delay={0.15} className="mt-20">

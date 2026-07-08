@@ -41,8 +41,7 @@ export function Projects() {
                   onClick={() => setSelectedProject(project)}
                   className="group relative block w-full text-left"
                 >
-                  <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-neutral-200 to-neutral-200 dark:from-neutral-800 dark:to-neutral-800 opacity-0 group-hover:opacity-100 transition duration-300 blur-sm"></div>
-                  <div className="relative h-full w-full rounded-2xl bg-card border p-6">
+                  <div className="relative h-full w-full rounded-2xl bg-card border p-6 transition-all duration-300 group-hover:border-neutral-400 dark:group-hover:border-neutral-500 group-hover:shadow-md group-hover:-translate-y-1">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-foreground group-hover:text-blue-500 transition-colors">
                         {project.title}
