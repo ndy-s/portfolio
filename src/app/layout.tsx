@@ -7,6 +7,8 @@ import { BackgroundAudio } from "@/components/BackgroundAudio";
 import { CosmicHelp } from "@/components/CosmicHelp";
 import { PageLoader } from "@/components/PageLoader";
 import { LoadingProvider } from "@/components/LoadingProvider";
+import { CodexProvider } from "@/components/CodexProvider";
+import { CosmicCodex } from "@/components/CosmicCodex";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,16 +38,19 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LoadingProvider>
-            <PageLoader />
-            <StarField />
-            <div className="nebula-overlay nebula-1" />
-            <div className="nebula-overlay nebula-2" />
-            <div className="nebula-overlay nebula-3" />
-            <div className="relative z-10 flex-1 w-full max-w-2xl mx-auto px-6 py-12 md:py-24">
-              {children}
-            </div>
-            <BackgroundAudio />
-            <CosmicHelp />
+            <CodexProvider>
+              <PageLoader />
+              <StarField />
+              <div className="nebula-overlay nebula-1" />
+              <div className="nebula-overlay nebula-2" />
+              <div className="nebula-overlay nebula-3" />
+              <div className="relative z-10 flex-1 w-full max-w-2xl mx-auto px-6 py-12 md:py-24">
+                {children}
+              </div>
+              <BackgroundAudio />
+              <CosmicHelp />
+              <CosmicCodex />
+            </CodexProvider>
           </LoadingProvider>
         </ThemeProvider>
       </body>

@@ -1,26 +1,33 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-const LoadingContext = createContext(false);
+type LoadingContextType = {
+  isLoaded: boolean;
+  completeLoading: () => void;
+};
+
+const LoadingContext = createContext<LoadingContextType>({
+  isLoaded: false,
+  completeLoading: () => {},
+});
 
 export function LoadingProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 1300);
-    return () => clearTimeout(timer);
-  }, []);
+  const completeLoading = () => setIsLoaded(true);
 
   return (
-    <LoadingContext.Provider value={isLoaded}>
+    <LoadingContext.Provider value={{ isLoaded, completeLoading }}>
       {children}
     </LoadingContext.Provider>
   );
 }
 
 export function useLoading() {
+  return useContext(LoadingContext).isLoaded;
+}
+
+export function useLoadingControls() {
   return useContext(LoadingContext);
 }
