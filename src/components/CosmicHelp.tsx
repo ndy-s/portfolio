@@ -47,7 +47,7 @@ export function CosmicHelp() {
         }}
         whileHover={{ scale: 1.1, rotate: 0 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white/70 hover:text-white transition-colors backdrop-blur-md border border-white/10 shadow-lg group"
+        className="fixed bottom-16 sm:bottom-20 left-4 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white/70 hover:text-white transition-colors backdrop-blur-md border border-white/10 shadow-lg group"
         title="Cosmic Features Guide"
         aria-label="Cosmic Features Guide"
       >
@@ -96,12 +96,12 @@ export function CosmicHelp() {
               {/* Scrollable Content */}
               <div className="overflow-y-auto overscroll-contain flex-1 px-4 sm:px-6 md:px-8 py-2">
                 <div className="space-y-3 sm:space-y-4">
-                  <div className="bg-muted/30 p-3 sm:p-4 rounded-xl border border-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.1)]">
-                    <h3 className="font-semibold text-xs sm:text-sm text-yellow-500 flex items-center gap-2 mb-1">
-                      <span>📖</span> Cosmic Codex (Collection Game)
+                  <div className="bg-muted/30 p-3 sm:p-4 rounded-xl border border-white/5">
+                    <h3 className="font-semibold text-xs sm:text-sm text-foreground flex items-center gap-2 mb-1">
+                      <span>📖</span> Cosmic Codex
                     </h3>
                     <p className="text-xs text-muted leading-relaxed">
-                      Interact with undiscovered planets and stars to log them into your Codex (bottom-left button). Can you collect all 14 celestial bodies?
+                      Interact with undiscovered planets and stars to log them into your Codex (bottom-left button). Can you collect all 16 celestial bodies?
                     </p>
                   </div>
                   <div className="bg-muted/30 p-3 sm:p-4 rounded-xl border border-white/5">

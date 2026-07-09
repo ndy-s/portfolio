@@ -95,6 +95,31 @@ function CelestialBodyShape({ body }: { body: any }) {
         </div>
       )
     }
+    if (body.id === "asteroid-cluster") {
+      return (
+        <div className="relative w-12 h-12 flex items-center justify-center">
+          <div 
+            className="w-6 h-6 bg-stone-500 absolute top-2 left-2" 
+            style={{ 
+              borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+              boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.5)'
+            }} 
+          />
+          <div 
+            className="w-3 h-3 bg-stone-400 absolute top-1 right-2" 
+            style={{ borderRadius: '50% 40% 60% 40%', boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5)' }} 
+          />
+          <div 
+            className="w-4 h-4 bg-stone-600 absolute bottom-1 right-3" 
+            style={{ borderRadius: '40% 60% 50% 50%', boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5)' }} 
+          />
+          <div 
+            className="w-2 h-2 bg-stone-400 absolute bottom-3 left-1" 
+            style={{ borderRadius: '60% 40% 50% 50%', boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5)' }} 
+          />
+        </div>
+      )
+    }
   }
 
   return <div className="text-3xl">{body.icon}</div>;
@@ -150,7 +175,7 @@ export function CosmicCodex() {
         }
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className={`fixed bottom-16 sm:bottom-20 left-4 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full transition-colors backdrop-blur-md shadow-lg group ${
+        className={`fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full transition-colors backdrop-blur-md shadow-lg group ${
           isComplete 
             ? "bg-yellow-500/30 border-yellow-500/50 hover:bg-yellow-500/50 text-yellow-100" 
             : "bg-black/40 hover:bg-black/60 border-white/10 text-white/70 hover:text-white"
@@ -171,7 +196,10 @@ export function CosmicCodex() {
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-6">
+          <motion.div 
+            key="codex-modal" 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-6"
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -182,6 +210,7 @@ export function CosmicCodex() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", bounce: 0, duration: 0.3 }}
               className="relative w-full max-w-md bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[85dvh] md:max-h-[90vh]"
             >
@@ -299,7 +328,7 @@ export function CosmicCodex() {
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

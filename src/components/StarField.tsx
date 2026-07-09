@@ -37,7 +37,7 @@ interface CelestialBody {
   vy: number
   radius: number
   mass: number
-  type: "planet" | "asteroid" | "blackhole" | "sun"
+  type: "planet" | "asteroid" | "blackhole" | "sun" | "asteroid-cluster"
   subtype: BodySubtype
   color: string
   rotation: number
@@ -144,7 +144,7 @@ function pickWeighted<T extends string>(entries: [T, number][]): T {
 function getSubtypeConfig(body: CelestialBody): SubtypeConfig {
   if (body.type === "sun") return STAR_SUBTYPES[body.subtype as StarSubtype]
   if (body.type === "planet") return PLANET_SUBTYPES[body.subtype as PlanetSubtype]
-  return OTHER_SUBTYPE_META[body.subtype as "asteroid" | "blackhole"]
+  return OTHER_SUBTYPE_META[body.subtype as "asteroid" | "blackhole" | "asteroid-cluster"]
 }
 
 function buildBodyInfo(
@@ -394,10 +394,10 @@ const NEBULA_PALETTES = [
 // Physics & Interaction Constants
 const FRICTION = 0.995
 const MAX_VELOCITY = 15
-const GRAVITY_CONSTANT = 0.0008 // Tuned for visual scale
+const GRAVITY_CONSTANT = 0.0001 // Slowed down to allow spiraling before crashing
 const SUN_GRAVITY_MULTIPLIER = 4
-const BLACK_HOLE_GRAVITY = 0.012
-const BLACK_HOLE_ORBIT = 0.004
+const BLACK_HOLE_GRAVITY = 0.005 // Reduced for a slower, more visible spiral
+const BLACK_HOLE_ORBIT = 0.003
 const BLACK_HOLE_INFLUENCE = 2.5 // multiplier of screen width
 const SWALLOW_DURATION = 55 // frames at ~60fps
 
@@ -568,6 +568,43 @@ function drawSwallowingPrey(
     drawPlanetSurface(ctx, { subtype, color, ringColor, hasRing }, r, alpha, isDark, tier)
   } else if (type === "sun") {
     drawStarSurface(ctx, { subtype, color, pulseOffset: 0 }, r, alpha, isDark, time, tier)
+  } else if (type === "asteroid-cluster") {
+    const rocks = [
+      { rRatio: 0, angOffset: 0, size: 0.6, phase: 0 },
+      { rRatio: 1.1, angOffset: 0.3, size: 0.3, phase: 1.2 },
+      { rRatio: 1.3, angOffset: 2.1, size: 0.25, phase: 2.4 },
+      { rRatio: 0.9, angOffset: 4.2, size: 0.35, phase: 3.5 },
+      { rRatio: 1.4, angOffset: 5.5, size: 0.2, phase: 4.1 },
+    ]
+    for (const rock of rocks) {
+      const rockAngle = time * 0.002 + rock.angOffset
+      const rx = rock.rRatio === 0 ? 0 : Math.cos(rockAngle) * rock.rRatio * r
+      const ry = rock.rRatio === 0 ? 0 : Math.sin(rockAngle) * rock.rRatio * r
+      const rr = r * rock.size
+      
+      const sides = 6
+      ctx.beginPath()
+      for (let k = 0; k < sides; k++) {
+        const angle = (k / sides) * Math.PI * 2
+        const jitter = 0.7 + Math.sin(k * 11.3 + rock.phase) * 0.3
+        const px = rx + Math.cos(angle) * rr * jitter
+        const py = ry + Math.sin(angle) * rr * jitter
+        if (k === 0) ctx.moveTo(px, py)
+        else ctx.lineTo(px, py)
+      }
+      ctx.closePath()
+
+      if (tier === "low") {
+        ctx.fillStyle = isDark ? `rgba(${color}, ${alpha})` : `rgba(130, 125, 115, ${alpha})`
+        ctx.fill()
+      } else {
+        const aGrad = ctx.createRadialGradient(rx - rr * 0.2, ry - rr * 0.2, 0, rx, ry, rr)
+        aGrad.addColorStop(0, isDark ? `rgba(${color}, ${alpha})` : `rgba(130, 125, 115, ${alpha})`)
+        aGrad.addColorStop(1, isDark ? `rgba(100, 95, 90, ${alpha * 0.5})` : `rgba(70, 65, 60, ${alpha * 0.5})`)
+        ctx.fillStyle = aGrad
+        ctx.fill()
+      }
+    }
   } else {
     const sides = 7
     ctx.beginPath()
@@ -607,26 +644,30 @@ function generateBody(width: number, height: number): CelestialBody {
   let hasRing = false
   let ringColor = ""
 
-  if (typeRoll < 0.05) {
+  if (typeRoll < 0.03) {
     type = "blackhole"
     subtype = "blackhole"
     config = OTHER_SUBTYPE_META.blackhole
     ringColor = ["255, 150, 50", "150, 200, 255", "255, 100, 255"][Math.floor(Math.random() * 3)]
     hasRing = true
-  } else if (typeRoll < 0.15) {
+  } else if (typeRoll < 0.13) {
     type = "sun"
     subtype = pickWeighted(STAR_SUBTYPE_WEIGHTS)
     config = STAR_SUBTYPES[subtype]
-  } else if (typeRoll < 0.60) {
+  } else if (typeRoll < 0.45) {
     type = "planet"
     subtype = pickWeighted(PLANET_SUBTYPE_WEIGHTS)
     config = PLANET_SUBTYPES[subtype]
     ringColor = config.ringColor ?? ""
     hasRing = config.ringChance !== undefined && Math.random() < config.ringChance
-  } else {
+  } else if (typeRoll < 0.90) {
     type = "asteroid"
     subtype = "asteroid"
     config = OTHER_SUBTYPE_META.asteroid
+  } else {
+    type = "asteroid-cluster"
+    subtype = "asteroid-cluster"
+    config = OTHER_SUBTYPE_META["asteroid-cluster"]
   }
 
   const radius = Math.random() * (config.radiusMax - config.radiusMin) + config.radiusMin
@@ -1629,12 +1670,15 @@ export function StarField() {
             const collisionY = (body.y + other.y) / 2
             const collisionZ = (body.z + other.z) / 2
             let debrisCount = Math.floor(Math.random() * 8 + 6)
+            if (smaller.type === "asteroid-cluster") {
+              debrisCount += 15 // massive debris scatter for a cluster breaking apart
+            }
             if (tier === "low") debrisCount = Math.floor(debrisCount * 0.3)
             else if (tier === "medium") debrisCount = Math.floor(debrisCount * 0.6)
 
             for (let p = 0; p < debrisCount; p++) {
               const angle = (p / debrisCount) * Math.PI * 2 + Math.random() * 0.5
-              const spd = Math.random() * 3 + 1.5
+              const spd = Math.random() * 3 + 1.5 + (smaller.type === "asteroid-cluster" ? Math.random() * 2 : 0)
               particlesRef.current.push({
                 x: (collisionX / collisionZ) * (w / 4) + cx,
                 y: (collisionY / collisionZ) * (h / 4) + cy,
@@ -1778,6 +1822,40 @@ export function StarField() {
             ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.9})`
             ctx.lineWidth = Math.max(r * 0.1, 0.5)
             ctx.stroke()
+          }
+        } else if (body.type === "asteroid-cluster") {
+          const rocks = [
+            { rRatio: 0, angOffset: 0, size: 0.6, phase: 0 },
+            { rRatio: 1.1, angOffset: 0.3, size: 0.3, phase: 1.2 },
+            { rRatio: 1.3, angOffset: 2.1, size: 0.25, phase: 2.4 },
+            { rRatio: 0.9, angOffset: 4.2, size: 0.35, phase: 3.5 },
+            { rRatio: 1.4, angOffset: 5.5, size: 0.2, phase: 4.1 },
+            { rRatio: 1.6, angOffset: 1.1, size: 0.2, phase: 0.5 }
+          ]
+          
+          for (const rock of rocks) {
+            const rockAngle = time * 0.001 * (1.5 / Math.max(rock.rRatio, 1)) + rock.angOffset
+            const rx = rock.rRatio === 0 ? 0 : Math.cos(rockAngle) * rock.rRatio * r
+            const ry = rock.rRatio === 0 ? 0 : Math.sin(rockAngle) * rock.rRatio * r
+            const rr = r * rock.size
+
+            const sides = 6
+            ctx.beginPath()
+            for (let k = 0; k < sides; k++) {
+              const angle = (k / sides) * Math.PI * 2
+              const jitter = 0.7 + Math.sin(k * 11.3 + body.id + rock.phase) * 0.3
+              const px = rx + Math.cos(angle) * rr * jitter
+              const py = ry + Math.sin(angle) * rr * jitter
+              if (k === 0) ctx.moveTo(px, py)
+              else ctx.lineTo(px, py)
+            }
+            ctx.closePath()
+
+            const aGrad = ctx.createRadialGradient(rx - rr * 0.2, ry - rr * 0.2, 0, rx, ry, rr)
+            aGrad.addColorStop(0, isDark ? `rgba(180, 175, 165, ${alpha})` : `rgba(130, 125, 115, ${alpha})`)
+            aGrad.addColorStop(1, isDark ? `rgba(90, 85, 80, ${alpha * 0.5})` : `rgba(70, 65, 60, ${alpha * 0.5})`)
+            ctx.fillStyle = aGrad
+            ctx.fill()
           }
         } else {
           const sides = 7

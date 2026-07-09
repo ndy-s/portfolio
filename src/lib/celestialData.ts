@@ -1,8 +1,8 @@
 export type StarSubtype = "red-dwarf" | "yellow-dwarf" | "blue-giant" | "red-giant" | "neutron-star" | "white-dwarf"
 export type PlanetSubtype = "gas-giant" | "rocky" | "ice" | "desert" | "ocean" | "lava"
-export type BodySubtype = StarSubtype | PlanetSubtype | "asteroid" | "blackhole" | "comet"
+export type BodySubtype = StarSubtype | PlanetSubtype | "asteroid" | "blackhole" | "comet" | "asteroid-cluster"
 
-export const TOTAL_CELESTIAL_BODIES = 15
+export const TOTAL_CELESTIAL_BODIES = 16
 
 export interface SubtypeConfig {
   label: string
@@ -48,7 +48,7 @@ export const STAR_SUBTYPES: Record<StarSubtype, SubtypeConfig> = {
   },
   "blue-giant": {
     label: "Blue Giant",
-    icon: "💙",
+    icon: "🔵",
     trait: "Hot and massive · short-lived",
     radiusMin: 34,
     radiusMax: 48,
@@ -160,7 +160,7 @@ export const PLANET_SUBTYPES: Record<PlanetSubtype, SubtypeConfig> = {
   },
 }
 
-export const OTHER_SUBTYPE_META: Record<"asteroid" | "blackhole" | "comet", SubtypeConfig> = {
+export const OTHER_SUBTYPE_META: Record<"asteroid" | "blackhole" | "comet" | "asteroid-cluster", SubtypeConfig> = {
   asteroid: {
     label: "Asteroid",
     icon: "☄️",
@@ -189,5 +189,14 @@ export const OTHER_SUBTYPE_META: Record<"asteroid" | "blackhole" | "comet", Subt
     radiusMax: 8,
     massMultiplier: 0.2,
     color: "200, 255, 255",
+  },
+  "asteroid-cluster": {
+    label: "Asteroid Cluster",
+    icon: "🪨",
+    trait: "A dense group of drifting rocks",
+    radiusMin: 14,
+    radiusMax: 20,
+    massMultiplier: 0.8,
+    color: "150, 140, 130",
   }
 }
