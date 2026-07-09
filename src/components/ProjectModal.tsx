@@ -37,7 +37,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   return (
     <AnimatePresence>
       {isOpen && project && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -50,7 +50,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-            className="relative w-full sm:max-w-2xl bg-card border shadow-xl rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[90vh]"
+            className="relative w-full sm:max-w-2xl bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[90dvh] md:max-h-[90vh]"
           >
             <div className="p-4 sm:p-6 md:p-8 overflow-y-auto overscroll-contain flex-1">
               <div className="flex justify-between items-start mb-3 sm:mb-4 gap-3">

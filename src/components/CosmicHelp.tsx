@@ -34,14 +34,25 @@ export function CosmicHelp() {
 
   return (
     <>
-      <button
+      <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/10 shadow-lg group"
+        animate={{
+          scale: [1, 1.1, 0.9, 1.1, 1],
+          rotate: [0, -10, 10, -10, 0]
+        }}
+        transition={{
+          duration: 0.6,
+          repeat: Infinity,
+          repeatDelay: 5
+        }}
+        whileHover={{ scale: 1.1, rotate: 0 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white/70 hover:text-white transition-colors backdrop-blur-md border border-white/10 shadow-lg group"
         title="Cosmic Features Guide"
         aria-label="Cosmic Features Guide"
       >
         <span className="font-bold font-mono text-base sm:text-lg opacity-80 group-hover:opacity-100">?</span>
-      </button>
+      </motion.button>
 
       <AnimatePresence>
         {isOpen && (

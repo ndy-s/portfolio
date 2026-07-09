@@ -38,7 +38,7 @@ export function BackgroundAudio() {
   }, [])
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 group">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 group">
       <audio
         ref={audioRef}
         loop
@@ -54,8 +54,8 @@ export function BackgroundAudio() {
 
       {/* Indicator when not playing */}
       {!isPlaying && !hasError && (
-        <span className="absolute right-14 top-1/2 -translate-y-1/2 text-xs font-medium whitespace-nowrap bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white/90 animate-pulse pointer-events-none">
-          Click to enable audio
+        <span className="absolute right-[120%] top-1/2 -translate-y-1/2 text-xs font-medium whitespace-nowrap bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white/90 animate-pulse pointer-events-none">
+          Enable cosmic ambiance ✨
         </span>
       )}
 
@@ -63,7 +63,7 @@ export function BackgroundAudio() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={togglePlay}
-        className={`flex items-center justify-center w-12 h-12 rounded-full bg-background/80 backdrop-blur-md border shadow-lg transition-colors ${hasError ? "border-red-500/30 text-red-500" : "border-border text-foreground hover:bg-card"
+        className={`flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-background/80 backdrop-blur-md border shadow-lg transition-colors ${hasError ? "border-red-500/30 text-red-500" : "border-border text-foreground hover:bg-card"
           }`}
         aria-label="Toggle background music"
       >
