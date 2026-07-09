@@ -305,9 +305,9 @@ interface NebulaCloud {
 type PerformanceTier = "high" | "medium" | "low"
 
 const TIER_CONFIGS = {
-  high:   { maxStars: 450, minStars: 100, maxBodies: 15, maxNebulae: 4, maxComets: 2, maxShootingStars: 3, maxDpr: Infinity, debrisMin: 6, debrisMax: 14, trailLength: 28 },
-  medium: { maxStars: 200, minStars: 60,  maxBodies: 8,  maxNebulae: 2, maxComets: 1, maxShootingStars: 1, maxDpr: 1.5,      debrisMin: 4, debrisMax: 8,  trailLength: 12 },
-  low:    { maxStars: 80,  minStars: 40,  maxBodies: 4,  maxNebulae: 0, maxComets: 0, maxShootingStars: 0, maxDpr: 1,        debrisMin: 2, debrisMax: 4,  trailLength: 0 },
+  high: { maxStars: 450, minStars: 100, maxBodies: 15, maxNebulae: 4, maxComets: 2, maxShootingStars: 3, maxDpr: Infinity, debrisMin: 6, debrisMax: 14, trailLength: 28 },
+  medium: { maxStars: 200, minStars: 60, maxBodies: 8, maxNebulae: 2, maxComets: 1, maxShootingStars: 1, maxDpr: 1.5, debrisMin: 4, debrisMax: 8, trailLength: 12 },
+  low: { maxStars: 80, minStars: 40, maxBodies: 4, maxNebulae: 0, maxComets: 0, maxShootingStars: 0, maxDpr: 1, debrisMin: 2, debrisMax: 4, trailLength: 0 },
 } as const
 
 function detectPerformanceTier(): PerformanceTier {
@@ -581,7 +581,7 @@ function drawSwallowingPrey(
       const rx = rock.rRatio === 0 ? 0 : Math.cos(rockAngle) * rock.rRatio * r
       const ry = rock.rRatio === 0 ? 0 : Math.sin(rockAngle) * rock.rRatio * r
       const rr = r * rock.size
-      
+
       const sides = 6
       ctx.beginPath()
       for (let k = 0; k < sides; k++) {
@@ -617,7 +617,7 @@ function drawSwallowingPrey(
       else ctx.lineTo(px, py)
     }
     ctx.closePath()
-    
+
     if (tier === "low") {
       ctx.fillStyle = isDark ? `rgba(${color}, ${alpha})` : `rgba(140, 135, 125, ${alpha})`
       ctx.fill()
@@ -1161,7 +1161,7 @@ export function StarField() {
 
     const onPointerDown = (e: PointerEvent) => {
       const { x, y } = getPointerPos(e)
-      
+
       // Check comets for codex catching
       const cometHit = findCometAtPoint(x, y)
       if (cometHit) {
@@ -1198,7 +1198,7 @@ export function StarField() {
 
         if (dist <= hitRadius) {
           if (e.cancelable) e.preventDefault()
-          
+
           body.isDragging = true
           body.vx = 0
           body.vy = 0
@@ -1340,7 +1340,7 @@ export function StarField() {
     window.addEventListener("pointermove", onPointerMove, { passive: false })
     window.addEventListener("pointerup", onPointerUp)
     window.addEventListener("pointercancel", onPointerUp)
-    
+
     // Only capture leave on canvas/document if needed
     document.addEventListener("pointerleave", onPointerLeave)
 
@@ -1361,7 +1361,7 @@ export function StarField() {
 
     mountedRef.current = true
     tierRef.current = detectPerformanceTier()
-    
+
     const ctx = canvas.getContext("2d", { alpha: false })
     if (!ctx) return
 
@@ -1369,7 +1369,7 @@ export function StarField() {
       const config = TIER_CONFIGS[tierRef.current]
       const rawDpr = window.devicePixelRatio || 1
       const dpr = Math.min(rawDpr, config.maxDpr)
-      
+
       canvas.width = window.innerWidth * dpr
       canvas.height = window.innerHeight * dpr
       canvas.style.width = `${window.innerWidth}px`
@@ -1832,7 +1832,7 @@ export function StarField() {
             { rRatio: 1.4, angOffset: 5.5, size: 0.2, phase: 4.1 },
             { rRatio: 1.6, angOffset: 1.1, size: 0.2, phase: 0.5 }
           ]
-          
+
           for (const rock of rocks) {
             const rockAngle = time * 0.001 * (1.5 / Math.max(rock.rRatio, 1)) + rock.angOffset
             const rx = rock.rRatio === 0 ? 0 : Math.cos(rockAngle) * rock.rRatio * r
@@ -2152,9 +2152,9 @@ export function StarField() {
 
   const tooltipStyle = tooltipInfo
     ? {
-        left: Math.min(Math.max(tooltipInfo.screenX, 120), window.innerWidth - 120),
-        top: Math.max(tooltipInfo.screenY - tooltipInfo.anchorSize - 16, 12),
-      }
+      left: Math.min(Math.max(tooltipInfo.screenX, 120), window.innerWidth - 120),
+      top: Math.max(tooltipInfo.screenY - tooltipInfo.anchorSize - 16, 12),
+    }
     : undefined
 
   return (
