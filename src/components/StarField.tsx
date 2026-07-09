@@ -394,10 +394,10 @@ const NEBULA_PALETTES = [
 // Physics & Interaction Constants
 const FRICTION = 0.995
 const MAX_VELOCITY = 15
-const GRAVITY_CONSTANT = 0.0001 // Slowed down to allow spiraling before crashing
+const GRAVITY_CONSTANT = 0.0008 // Tuned for visual scale
 const SUN_GRAVITY_MULTIPLIER = 4
-const BLACK_HOLE_GRAVITY = 0.005 // Reduced for a slower, more visible spiral
-const BLACK_HOLE_ORBIT = 0.003
+const BLACK_HOLE_GRAVITY = 0.012
+const BLACK_HOLE_ORBIT = 0.004
 const BLACK_HOLE_INFLUENCE = 2.5 // multiplier of screen width
 const SWALLOW_DURATION = 55 // frames at ~60fps
 
