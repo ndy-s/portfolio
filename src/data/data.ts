@@ -64,9 +64,11 @@ export type Project = {
 
 export const CONTENT = {
   subtitle: "Software Engineer",
-  about: `My journey in software began with a simple obsession: taking things apart to understand how they work, then rebuilding them until they made sense. That instinct has stayed with me. I find genuine satisfaction in turning ambiguous, messy requirements into clean, well-structured solutions, and in automating away the tedious parts of any workflow. I am drawn, in particular, to the architecture beneath a system: how its pieces fit together, and how to make them work well as a whole. My specialty is backend engineering, though I move comfortably across the stack into frontend work, and I remain equally drawn to Machine Learning and AI, finding the space where these disciplines meet especially compelling.
+  about: `I've always been drawn to taking things apart to understand how they work, then rebuilding them until they made sense. That curiosity shaped my path into backend engineering and system architecture, where I focus on turning ambiguous problems into clean, reliable solutions.
   
-Beyond the screen, I am an introvert with a quiet curiosity about how the world works. Few things fascinate me more than space, which is why this portfolio takes its shape from a warp speed theme, a passage through the vastness of it all. I hold a similar appreciation for travel and time spent in nature; there is something quietly powerful about standing somewhere new and simply taking it in. I am a creator at heart as well, drawing and building small open-source tools in whatever spare time I can find. My deepest ambition is to travel the world, one meaningful place at a time.`,
+Over the years, I've built production-grade systems across core banking (loan origination, payroll, and expense and fixed-asset accounting for insurance), a campus-wide platform, and AI-focused projects including RLHF work for AI coding assistants. I move comfortably across the stack, but what excites me most is the space where software engineering meets machine learning, and the possibilities that emerge when the two intersect.
+
+Beyond the screen, I'm a quiet observer of how the world works, drawn to space (which inspired this site's warp-speed theme), travel, and time spent in nature. I also make art and build small open-source tools whenever I can find the time.`,
   sections: {
     services: {
       title: "Freelance Services",
