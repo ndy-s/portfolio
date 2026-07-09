@@ -182,9 +182,8 @@ export function CosmicCodex() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-              className="relative w-full max-w-2xl bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[85dvh] md:max-h-[90vh]"
+              className="relative w-full max-w-md bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[85dvh] md:max-h-[90vh]"
             >
               {/* Header */}
               <div className="flex justify-between items-start p-4 sm:p-6 md:p-8 pb-4 border-b border-white/5 shrink-0 relative overflow-hidden">
@@ -248,7 +247,7 @@ export function CosmicCodex() {
                   return (
                     <div key={category}>
                       <h3 className="text-lg font-semibold text-foreground/90 mb-4 border-b border-white/5 pb-2">{category}</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                         {bodiesInCategory.map((body) => {
                           const isCaught = caughtSubtypes.includes(body.id);
                           return (
@@ -288,6 +287,16 @@ export function CosmicCodex() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Footer (Fixed) */}
+              <div className="p-4 sm:p-6 md:p-8 pt-2 sm:pt-4 shrink-0 border-t border-white/5">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-full py-2.5 sm:py-3 bg-foreground text-background font-medium rounded-xl hover:opacity-90 transition-opacity text-sm"
+                >
+                  Close Codex
+                </button>
               </div>
             </motion.div>
           </div>
