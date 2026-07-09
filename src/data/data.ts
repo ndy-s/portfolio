@@ -54,12 +54,14 @@ export type ProjectMedia = {
 export type Project = {
   title: string;
   description: string;
+  story?: string;
   details: string[];
   tags: string[];
   link?: string;
   github?: string;
   demo?: string;
   media?: ProjectMedia[];
+  comingSoon?: boolean;
 };
 
 export const CONTENT = {
@@ -176,15 +178,12 @@ export const DATA = {
 export const PROJECTS: Project[] = [
   {
     title: "Portfolio Website",
-    description: "My personal portfolio website built with Next.js, Tailwind CSS, and Framer Motion.",
-    details: [
-      "Designed a minimalist, single-page layout inspired by modern design trends.",
-      "Implemented smooth scroll animations and typing effects using Framer Motion.",
-      "Built with dark/light mode toggle via next-themes and custom CSS variables.",
-      "Fully responsive and optimized for mobile viewing."
-    ],
-    tags: ["Next.js", "TypeScript", "Tailwind CSS"],
-    github: "https://github.com/ndy-s",
-    demo: "https://github.com/ndy-s",
+    description: "A personal portfolio featuring a real-time N-body physics simulation as its interactive background.",
+    story: "This portfolio is more than a static page — the background is a live physics sandbox running an N-body gravitational simulation on HTML5 Canvas. Every celestial body has mass and velocity, interacting through Newtonian gravity in real-time. You can grab planets, fling them into black holes, and watch collisions scatter debris with synthesized audio feedback. The rendering pipeline adapts to your device hardware, automatically scaling visual fidelity and physics complexity across three performance tiers to ensure smooth framerates on any device.",
+    details: [],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Canvas", "Web Audio API"],
+    github: "https://github.com/ndy-s/portfolio",
+    demo: "https://hendy.dev",
+    comingSoon: true,
   },
 ];

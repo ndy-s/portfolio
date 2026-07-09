@@ -79,27 +79,13 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 </button>
               </div>
 
-              <p className="text-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
-                {project.description}
-              </p>
-
               {project.media && project.media.length > 0 && (
                 <MediaCarousel media={project.media} />
               )}
 
-              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                  Key Details & Impact
-                </h3>
-                <ul className="space-y-3">
-                  {project.details.map((detail, index) => (
-                    <li key={index} className="flex items-start text-muted text-sm sm:text-base leading-relaxed">
-                      <span className="mr-3 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="text-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
+                {project.story || project.description}
+              </p>
 
               <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                 {project.tags.map((tag) => (

@@ -52,8 +52,8 @@ export function Projects() {
                             <SiGithub className="w-4 h-4" />
                           </span>
                         )}
-                        <span className="text-xs font-medium px-2 py-1 rounded bg-background border flex items-center shrink-0">
-                          View Details
+                        <span className={`text-xs font-medium px-2 py-1 rounded border flex items-center shrink-0 ${project.comingSoon ? 'text-amber-500 border-amber-500/30 bg-amber-500/10' : 'bg-background text-muted'}`}>
+                          {project.comingSoon ? "Coming Soon" : "View Details"}
                         </span>
                       </div>
                     </div>
