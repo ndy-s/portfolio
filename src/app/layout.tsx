@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Hendy Saputra",
+  title: "Hendy",
   description: "Portfolio of Hendy Saputra, a Software Engineer specializing in backend architecture, API orchestration, and full-stack development. Available for freelance.",
 };
 

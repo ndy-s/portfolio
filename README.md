@@ -105,6 +105,28 @@ The simulation renders six distinct layers every animation frame:
 
 ---
 
+### Adaptive Performance
+
+To ensure a smooth framerate across a wide range of devices, the simulation uses a dynamic tiering system (`high`, `medium`, `low`) that dictates rendering quality and physics calculations.
+
+**1. Device Detection on Mount:**
+The simulation infers device capabilities using:
+- `navigator.hardwareConcurrency` (CPU cores)
+- `navigator.deviceMemory` (RAM)
+- `window.devicePixelRatio` (DPR)
+- Screen Area (`innerWidth * innerHeight`)
+- `navigator.userAgent` (Mobile vs Desktop)
+
+**2. Tier Configurations:**
+- **High:** Renders up to 450 stars, 15 bodies, full DPR, rich multi-stop gradients, and complex glows.
+- **Medium:** Capped at 200 stars, 8 bodies, max DPR of 1.5. Disables non-essential planet gradients and inner shadows.
+- **Low:** Capped at 80 stars, 4 bodies, max DPR of 1.0. Uses flat colours instead of canvas gradients. Disables star warp streaks and drops $O(N^2)$ asteroid-asteroid gravity checks to alleviate CPU pressure.
+
+**3. Runtime FPS Guardian:**
+The application tracks the average frame render time during the first 60 frames. If the average FPS drops below 40 (`>25ms` per frame), it automatically downgrades the tier (e.g., `high` → `medium`) on the fly to rescue performance.
+
+---
+
 ### Coordinate System
 
 The simulation uses a **3D world-space** coordinate system projected into 2D screen space.

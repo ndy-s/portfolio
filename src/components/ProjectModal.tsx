@@ -37,7 +37,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   return (
     <AnimatePresence>
       {isOpen && project && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -50,16 +50,16 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-            className="relative w-full max-w-2xl bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-full sm:max-w-2xl bg-card border shadow-xl rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[90vh]"
           >
-            <div className="p-6 sm:p-8 overflow-y-auto flex-1">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold text-foreground pr-8">
+            <div className="p-4 sm:p-6 md:p-8 overflow-y-auto overscroll-contain flex-1">
+              <div className="flex justify-between items-start mb-3 sm:mb-4 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground pr-2 min-w-0">
                   {project.title}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="absolute right-6 top-6 p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors text-muted hover:text-foreground"
+                  className="shrink-0 p-2 -mr-1 -mt-1 sm:absolute sm:right-6 sm:top-6 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors text-muted hover:text-foreground"
                   aria-label="Close modal"
                 >
                   <svg
@@ -79,7 +79,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 </button>
               </div>
 
-              <p className="text-muted text-base mb-6 leading-relaxed">
+              <p className="text-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
                 {project.description}
               </p>
 
@@ -87,7 +87,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 <MediaCarousel media={project.media} />
               )}
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
                   Key Details & Impact
                 </h3>
@@ -101,7 +101,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 </ul>
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-8">
+              <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
@@ -112,13 +112,13 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 ))}
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border">
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 pt-4 border-t border-border">
                 {project.demo && (
                   <a
                     href={project.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-full bg-foreground text-background px-5 py-2 text-sm font-medium transition-transform hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium transition-transform hover:scale-105 active:scale-95"
                   >
                     Live Demo
                   </a>
@@ -128,7 +128,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-card border px-5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-card border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                   >
                     <SiGithub className="w-4 h-4" />
                     Source Code
