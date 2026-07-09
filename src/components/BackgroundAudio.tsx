@@ -30,7 +30,6 @@ export function BackgroundAudio() {
     }
   }
 
-  // Set a bigger background volume for ambience
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = 0.8

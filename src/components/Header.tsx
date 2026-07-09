@@ -4,12 +4,16 @@ import Link from "next/link"
 import { CONTENT } from "@/data/data"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import { useLoading } from "@/components/LoadingProvider"
 
 export function Header() {
   const [typedText, setTypedText] = useState("")
   const textToType = CONTENT.subtitle
+  const isLoaded = useLoading()
   
   useEffect(() => {
+    if (!isLoaded) return;
+    
     let i = 0
     const typingInterval = setInterval(() => {
       if (i === 0) setTypedText("")
@@ -23,7 +27,7 @@ export function Header() {
     }, 100)
     
     return () => clearInterval(typingInterval)
-  }, [textToType])
+  }, [textToType, isLoaded])
 
   return (
     <header className="mb-16">
@@ -33,7 +37,7 @@ export function Header() {
           alt="Hendy Saputra"
           className="w-16 h-16 rounded-full border border-neutral-200 dark:border-neutral-800 object-cover shadow-sm"
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          animate={isLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.5 }}
         />
         <div>
