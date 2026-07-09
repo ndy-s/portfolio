@@ -45,7 +45,7 @@ export function CosmicHelp() {
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -58,7 +58,7 @@ export function CosmicHelp() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-              className="relative w-full sm:max-w-md bg-card border shadow-xl rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85dvh] sm:max-h-[90vh]"
+              className="relative w-full max-w-md bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[85dvh] md:max-h-[90vh]"
             >
               {/* Header (Fixed) */}
               <div className="flex justify-between items-start p-4 sm:p-6 md:p-8 pb-2 sm:pb-3 gap-3 shrink-0">
