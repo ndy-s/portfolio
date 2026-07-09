@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { StarField } from "@/components/StarField";
 import { BackgroundAudio } from "@/components/BackgroundAudio";
 import { CosmicHelp } from "@/components/CosmicHelp";
+import { PageLoader } from "@/components/PageLoader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,6 +34,7 @@ export default function RootLayout({
           enableSystem={true}
           disableTransitionOnChange
         >
+          <PageLoader />
           <StarField />
           <div className="nebula-overlay nebula-1" />
           <div className="nebula-overlay nebula-2" />
