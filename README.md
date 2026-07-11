@@ -7,41 +7,6 @@ A personal portfolio website featuring an interactive, physics-based cosmic back
 ### Portfolio Website (Interactive N-Body Simulation)
 This portfolio is more than a static page; the background is a live physics sandbox running an N-body gravitational simulation on HTML5 Canvas. Every celestial body has mass and velocity, interacting through Newtonian gravity in real-time. You can grab planets, fling them into black holes, and watch collisions scatter debris with synthesized audio feedback. The rendering pipeline adapts to your device hardware, automatically scaling visual fidelity and physics complexity across three performance tiers to ensure smooth framerates on any device.
 
-## Tech Stack
-
-| Layer       | Technology                                      |
-| -------------| -------------------------------------------------|
-| Framework   | [Next.js 16](https://nextjs.org/) (App Router)  |
-| Language    | TypeScript                                      |
-| Styling     | Tailwind CSS (utility classes) + CSS Variables  |
-| Animations  | [Framer Motion](https://www.framer.com/motion/) |
-| Physics Sim | Custom HTML5 Canvas + `requestAnimationFrame`   |
-| Icons       | `react-icons` (Simple Icons, Font Awesome)      |
-| Theming     | `next-themes`                                   |
-| Font        | Inter (Google Fonts via `next/font`)            |
-
-## Project Structure
-
-```text
-src/
-├── app/
-│   ├── layout.tsx          # Root layout: theme provider, starfield, ambient audio
-│   ├── page.tsx            # Page composition (renders all sections)
-│   └── globals.css         # CSS variables, dark/light tokens
-│
-├── components/
-│   ├── StarField.tsx       # Physics and rendering simulation
-│   ├── Header.tsx          # Introduction and CTA
-│   ├── About.tsx           # Biography
-│   ├── Services.tsx        # Freelance services
-│   ├── WorkExperience.tsx  # Timeline of roles
-│   ├── Projects.tsx        # Project showcase
-│   └── ...                 # Other UI components
-│
-└── data/
-    └── data.ts             # Single source of truth for portfolio content
-```
-
 ## Getting Started
 
 ### Prerequisites

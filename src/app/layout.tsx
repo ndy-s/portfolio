@@ -18,7 +18,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Hendy",
-  description: "Hendy Saputra is a Software Engineer specializing in scalable backend systems, AI solutions, and engaging full-stack digital experiences. Let's build something extraordinary.",
+  description: "Hendy Saputra is a software engineer focused on scalable backend systems and AI-driven solutions, who cares as much about performance as polish.",
 };
 
 export default function RootLayout({

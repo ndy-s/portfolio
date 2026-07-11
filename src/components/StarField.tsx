@@ -4,8 +4,7 @@ import { useEffect, useRef, useCallback, useState } from "react"
 import { useTheme } from "next-themes"
 import { useCodex } from "./CodexProvider"
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
+// Types
 interface Star {
   x: number
   y: number
@@ -300,8 +299,7 @@ interface NebulaCloud {
   pulseOffset: number
 }
 
-// ─── Performance Tiers ───────────────────────────────────────────────────────────────
-
+// Performance Tiers
 type PerformanceTier = "high" | "medium" | "low"
 
 const TIER_CONFIGS = {
@@ -338,8 +336,7 @@ function detectPerformanceTier(): PerformanceTier {
   return "low"
 }
 
-// ─── Constants ───────────────────────────────────────────────────────────────────────
-
+// Constants
 const REFERENCE_AREA = 1920 * 1080
 
 function getStarCount(width: number, height: number, tier: PerformanceTier): number {
@@ -696,8 +693,7 @@ function generateBody(width: number, height: number): CelestialBody {
   }
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
-
+// Component
 export function StarField() {
   const { catchBody } = useCodex()
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -870,7 +866,11 @@ export function StarField() {
         dragGainRef.current.gain.setTargetAtTime(0, ctx.currentTime, 0.05)
         const osc = dragOscRef.current
         setTimeout(() => {
-          try { osc.stop() } catch { /* already stopped */ }
+          try {
+            osc.stop()
+          } catch {
+            /* already stopped */
+          }
         }, 200)
         dragOscRef.current = null
         dragGainRef.current = null
@@ -1061,8 +1061,7 @@ export function StarField() {
     }
   }, [])
 
-  // ─── Interaction Handlers ────────────────────────────────────────────────────
-
+  // Interaction Handlers
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -1353,8 +1352,7 @@ export function StarField() {
     }
   }, [startDragSound, stopDragSound, updateDragSound, playDiscoverySound, catchBody])
 
-  // ─── Rendering & Physics Loop ────────────────────────────────────────────────
-
+  // Rendering & Physics Loop
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -1421,7 +1419,7 @@ export function StarField() {
       ctx.fillStyle = isDark ? "#000000" : "#ffffff"
       ctx.fillRect(0, 0, w, h)
 
-      // ── Nebula clouds ──
+      // Nebula clouds
       if (isDark) {
         for (const neb of nebulaeRef.current) {
           neb.x += Math.cos(neb.driftAngle) * neb.drift * dt
@@ -1462,7 +1460,7 @@ export function StarField() {
       const cx = w / 2
       const cy = h / 2
 
-      // ── Stars ──
+      // Stars
       for (const star of starsRef.current) {
         star.prevZ = star.z
         star.z -= speed * dt
@@ -1523,7 +1521,7 @@ export function StarField() {
         }
       }
 
-      // ── Celestial Bodies (Physics) ──
+      // Celestial Bodies (Physics)
       const bodies = bodiesRef.current
       const targetBodyCount = getBodyCount(w, h, tier)
       const toRemove: number[] = [] // indices to remove after collision
@@ -1880,7 +1878,7 @@ export function StarField() {
         ctx.restore()
       }
 
-      // ── Black Hole Swallow Animations ──
+      // Black Hole Swallow Animations
       swallowingRef.current = swallowingRef.current.filter((effect) => {
         effect.progress += dt / SWALLOW_DURATION
 
@@ -1934,7 +1932,7 @@ export function StarField() {
           }
         }
 
-        // Spaghettification — stretch prey toward the event horizon
+        // Spaghettification, stretch prey toward the event horizon
         const radialAngle = Math.atan2(bhSy - sy, bhSx - sx)
         ctx.save()
         ctx.translate(sx, sy)
@@ -1972,7 +1970,7 @@ export function StarField() {
         return true
       })
 
-      // ── Collision Debris Particles ──
+      // Collision Debris Particles
       particlesRef.current = particlesRef.current.filter(particle => {
         particle.x += particle.vx * dt
         particle.y += particle.vy * dt
@@ -2008,7 +2006,7 @@ export function StarField() {
         return true
       })
 
-      // ── Comets & Shooting Stars ──
+      // Comets & Shooting Stars
       const maxComets = getMaxComets(w, h)
       if (time - lastCometTimeRef.current > (Math.random() * 12000 + 8000)) {
         if (cometsRef.current.length < maxComets) {

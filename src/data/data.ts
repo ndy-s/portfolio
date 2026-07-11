@@ -132,7 +132,7 @@ export const DATA = {
     },
     {
       title: "Machine Learning Mentor",
-      company: "Bangkit Academy",
+      company: "Bangkit Academy (by Google, GoTo, and Traveloka)",
       date: "Feb 2024 - Jul 2024",
     },
     {
@@ -179,7 +179,7 @@ export const PROJECTS: Project[] = [
   {
     title: "Portfolio Website",
     description: "A personal portfolio featuring a real-time N-body physics simulation as its interactive background.",
-    story: "This portfolio is more than a static page — the background is a live physics sandbox running an N-body gravitational simulation on HTML5 Canvas. Every celestial body has mass and velocity, interacting through Newtonian gravity in real-time. You can grab planets, fling them into black holes, and watch collisions scatter debris with synthesized audio feedback. The rendering pipeline adapts to your device hardware, automatically scaling visual fidelity and physics complexity across three performance tiers to ensure smooth framerates on any device.",
+    story: "This portfolio is more than a static page, the background is a live physics sandbox running an N-body gravitational simulation on HTML5 Canvas. Every celestial body has mass and velocity, interacting through Newtonian gravity in real-time. You can grab planets, fling them into black holes, and watch collisions scatter debris with synthesized audio feedback. The rendering pipeline adapts to your device hardware, automatically scaling visual fidelity and physics complexity across three performance tiers to ensure smooth frame rates on any device.",
     details: [],
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Canvas", "Web Audio API"],
     github: "https://github.com/ndy-s/portfolio",
