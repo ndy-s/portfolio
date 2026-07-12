@@ -629,8 +629,8 @@ function drawSwallowingPrey(
 }
 
 const MAX_DEPTH = 1000
-const BASE_SPEED = 0.3
-const WARP_MULTIPLIER = 1.0
+const BASE_SPEED = 2.0 // Increased from 0.3 for a much faster travel feel
+const WARP_MULTIPLIER = 2.0 // Increased from 1.0 to exaggerate the warp effect
 
 // Helper to generate a new celestial body
 function generateBody(width: number, height: number): CelestialBody {
@@ -1012,27 +1012,19 @@ export function StarField() {
   }, [createStar])
 
   const spawnComet = useCallback((w: number, h: number): Comet => {
-    const side = Math.floor(Math.random() * 4)
-    let x: number, y: number, vx: number, vy: number
-    const baseSpeed = Math.random() * 2 + 1.5
+    const cx = w / 2
+    const cy = h / 2
+    const angle = Math.random() * Math.PI * 2
+    
+    // Spawn within a small radius of the center
+    const r = Math.random() * (Math.min(w, h) * 0.1)
+    const x = cx + Math.cos(angle) * r
+    const y = cy + Math.sin(angle) * r
 
-    switch (side) {
-      case 0: // top
-        x = Math.random() * w; y = -20
-        vx = (Math.random() - 0.5) * baseSpeed; vy = baseSpeed
-        break
-      case 1: // right
-        x = w + 20; y = Math.random() * h
-        vx = -baseSpeed; vy = (Math.random() - 0.5) * baseSpeed
-        break
-      case 2: // bottom
-        x = Math.random() * w; y = h + 20
-        vx = (Math.random() - 0.5) * baseSpeed; vy = -baseSpeed
-        break
-      default: // left
-        x = -20; y = Math.random() * h
-        vx = baseSpeed; vy = (Math.random() - 0.5) * baseSpeed
-    }
+    // Travel outward
+    const baseSpeed = Math.random() * 3 + 2
+    const vx = Math.cos(angle) * baseSpeed
+    const vy = Math.sin(angle) * baseSpeed
 
     return {
       id: nextCometIdRef.current++,
@@ -1049,10 +1041,16 @@ export function StarField() {
   const spawnShootingStar = useCallback((w: number, h: number): ShootingStar => {
     const angle = Math.random() * Math.PI * 2
     const speed = Math.random() * 12 + 8
+    
+    const cx = w / 2
+    const cy = h / 2
+    const r = Math.random() * (Math.min(w, h) * 0.1)
+    const x = cx + Math.cos(angle) * r
+    const y = cy + Math.sin(angle) * r
+
     return {
       id: nextShootingStarIdRef.current++,
-      x: Math.random() * w,
-      y: Math.random() * h * 0.6,
+      x, y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       life: 0,
@@ -1456,7 +1454,7 @@ export function StarField() {
       }
 
       const speed = BASE_SPEED + WARP_MULTIPLIER * 3.0
-      const warpFactor = 3.0 / 100
+      const warpFactor = speed / 100 // Dynamic based on speed so trails render when moving fast
       const cx = w / 2
       const cy = h / 2
 
@@ -2008,7 +2006,7 @@ export function StarField() {
 
       // Comets & Shooting Stars
       const maxComets = getMaxComets(w, h)
-      if (time - lastCometTimeRef.current > (Math.random() * 12000 + 8000)) {
+      if (time - lastCometTimeRef.current > (Math.random() * 45000 + 45000)) {
         if (cometsRef.current.length < maxComets) {
           cometsRef.current.push(spawnComet(w, h))
           lastCometTimeRef.current = time
