@@ -23,7 +23,7 @@ export function Connect() {
         </a>
       </div>
       
-      <div className="flex items-center justify-start space-x-3">
+      <div className="flex flex-wrap items-center justify-start gap-3">
         <a
           href={DATA.github}
           target="_blank"

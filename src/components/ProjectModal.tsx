@@ -52,33 +52,33 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             transition={{ type: "spring", bounce: 0, duration: 0.3 }}
             className="relative w-full sm:max-w-2xl bg-card border shadow-xl rounded-2xl overflow-hidden flex flex-col max-h-[90dvh] md:max-h-[90vh]"
           >
-            <div className="p-4 sm:p-6 md:p-8 overflow-y-auto overscroll-contain flex-1">
-              <div className="flex justify-between items-start mb-3 sm:mb-4 gap-3">
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground pr-2 min-w-0">
-                  {project.title}
-                </h2>
-                <button
-                  onClick={onClose}
-                  className="shrink-0 p-2 -mr-1 -mt-1 sm:absolute sm:right-6 sm:top-6 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors text-muted hover:text-foreground"
-                  aria-label="Close modal"
+            <div className="p-4 sm:p-6 md:p-8 pb-3 sm:pb-4 md:pb-5 shrink-0 flex justify-between items-start gap-3 border-b border-border/50">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground pr-2 min-w-0">
+                {project.title}
+              </h2>
+              <button
+                onClick={onClose}
+                className="shrink-0 p-2 -mr-1 -mt-1 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors text-muted hover:text-foreground"
+                aria-label="Close modal"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
-                </button>
-              </div>
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            </div>
 
+            <div className="p-4 sm:p-6 md:p-8 overflow-y-auto overscroll-contain flex-1">
               {project.media && project.media.length > 0 && (
                 <MediaCarousel media={project.media} />
               )}
@@ -106,8 +106,11 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 pt-4 border-t border-border">
-                {project.github && (
+            </div>
+
+            {project.github && (
+              <div className="p-4 sm:p-6 md:p-8 pt-4 sm:pt-4 md:pt-4 border-t border-border shrink-0">
+                <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
                   <a
                     href={project.github}
                     target="_blank"
@@ -117,9 +120,9 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                     <SiGithub className="w-4 h-4" />
                     Source Code
                   </a>
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       )}

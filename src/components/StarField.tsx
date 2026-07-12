@@ -4,6 +4,16 @@ import { useEffect, useRef, useCallback, useState } from "react"
 import { useTheme } from "next-themes"
 import { useCodex } from "./CodexProvider"
 
+import {
+  StarSubtype,
+  PlanetSubtype,
+  BodySubtype,
+  SubtypeConfig,
+  STAR_SUBTYPES,
+  PLANET_SUBTYPES,
+  OTHER_SUBTYPE_META,
+} from "@/lib/celestialData"
+
 // Types
 interface Star {
   x: number
@@ -16,16 +26,6 @@ interface Star {
   twinkleOffset: number
   colorIndex: number
 }
-
-import {
-  StarSubtype,
-  PlanetSubtype,
-  BodySubtype,
-  SubtypeConfig,
-  STAR_SUBTYPES,
-  PLANET_SUBTYPES,
-  OTHER_SUBTYPE_META,
-} from "@/lib/celestialData"
 
 interface CelestialBody {
   id: number

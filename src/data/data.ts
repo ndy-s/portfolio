@@ -22,7 +22,6 @@ import {
   SiPostgresql,
   SiMongodb,
   SiGooglecloud,
-  SiApachekafka,
 } from "react-icons/si";
 import { FaJava, FaAws, FaDatabase, FaBrain, FaRobot, FaSync } from "react-icons/fa";
 import { GrOracle } from "react-icons/gr";
@@ -66,7 +65,7 @@ export const CONTENT = {
   subtitle: "Software Engineer",
   about: `I've always been drawn to taking things apart to understand how they work, then rebuilding them until they made sense. That curiosity shaped my path into backend engineering and system architecture, where I focus on turning ambiguous problems into clean, reliable solutions.
   
-Over the years, I've built production-grade systems across core banking (loan origination, payroll, and expense and fixed-asset accounting for insurance), a campus-wide platform, and AI-focused projects including RLHF work for AI coding assistants. I move comfortably across the stack, but what excites me most is the space where software engineering meets machine learning, and the possibilities that emerge when the two intersect.
+Over the years, I've built production-grade systems across core banking (loan origination), payroll, and expense and fixed-asset accounting for insurance, a campus-wide platform, and AI-focused projects including RLHF work for AI coding assistants. I move comfortably across the stack, but what excites me most is the space where software engineering meets machine learning, and the possibilities that emerge when the two intersect.
 
 Beyond the screen, I'm a quiet observer of how the world works, drawn to space (which inspired this site's warp-speed theme), travel, and time spent in nature. I also make art and build small open-source tools whenever I can find the time.`,
   sections: {
@@ -155,7 +154,6 @@ export const DATA = {
     { name: "Next.js", icon: SiNextdotjs },
     { name: "Vue.js", icon: SiVuedotjs },
     { name: "Laravel", icon: SiLaravel },
-    // { name: "Kafka", icon: SiApachekafka },
     { name: "RabbitMQ", icon: SiRabbitmq },
     { name: "PyTorch", icon: SiPytorch },
     { name: "LangChain", icon: FaRobot },
