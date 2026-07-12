@@ -629,8 +629,8 @@ function drawSwallowingPrey(
 }
 
 const MAX_DEPTH = 1000
-const BASE_SPEED = 2.0 // Increased from 0.3 for a much faster travel feel
-const WARP_MULTIPLIER = 2.0 // Increased from 1.0 to exaggerate the warp effect
+const BASE_SPEED = 0.8
+const WARP_MULTIPLIER = 1.2
 
 // Helper to generate a new celestial body
 function generateBody(width: number, height: number): CelestialBody {
