@@ -277,7 +277,7 @@ export const PROJECTS: Project[] = [
     github: "https://github.com/ndy-s/quest-os",
   },
   {
-    title: "EFAMS",
+    title: "Expense & Fixed Asset Management System (EFAMS)",
     description: "A transactional dashboard template inspired by enterprise banking systems, built for the modern web.",
     story: "I built this to explore how the robust, rigid design patterns of enterprise banking applications could be adapted to a modern frontend stack. Discontent with the clunky designs at my previous job, I extracted core banking concepts, like strict page modes, menu codes, and persistent global context, and applied them to a clean React application built with Vite.",
     details: [
@@ -313,11 +313,6 @@ export const PROJECTS: Project[] = [
         type: "image",
         src: "https://raw.githubusercontent.com/ndy-s/anitopia/main/src/public/anitopia_demo.png",
         alt: "Anitopia Character Collection"
-      },
-      {
-        type: "image",
-        src: "https://private-user-images.githubusercontent.com/94002483/326232897-acab4638-0d51-4c7a-9684-174fcf5b53f0.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODM4MTQ3MTUsIm5iZiI6MTc4MzgxNDQxNSwicGF0aCI6Ii85NDAwMjQ4My8zMjYyMzI4OTctYWNhYjQ2MzgtMGQ1MS00YzdhLTk2ODQtMTc0ZmNmNWI1M2YwLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA3MTIlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwNzEyVDAwMDAxNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTVhYjBkY2QzMDQzZDMzYjYzNGMwYzRjZTFhZDJhZWQ0MDM3M2RjMzJmN2E4NzNkNDNmNDNmZWM1MTY5MDgzZWYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRmdpZiJ9.g1gLNY6Ev5-3S182p4arP-UoUKkCXcF2TB2_DB7pnlI",
-        alt: "Anitopia Gameplay Demo"
       }
     ]
   }
