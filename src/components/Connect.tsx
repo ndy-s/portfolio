@@ -3,7 +3,7 @@
 import { DATA, CONTENT } from "@/data/data"
 import { AnimatedSection } from "./AnimatedSection"
 import { SiGithub } from "react-icons/si"
-import { FaLinkedin } from "react-icons/fa"
+import { FaLinkedin, FaFileAlt } from "react-icons/fa"
 
 export function Connect() {
   const section = CONTENT.sections.connect
@@ -41,6 +41,15 @@ export function Connect() {
         >
           <FaLinkedin className="h-4 w-4" />
           LinkedIn
+        </a>
+        <a
+          href={DATA.resume}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative inline-flex shrink-0 items-center gap-2 rounded-full bg-card border px-4 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-neutral-200 dark:hover:bg-neutral-800"
+        >
+          <FaFileAlt className="h-4 w-4" />
+          Resume
         </a>
       </div>
     </AnimatedSection>

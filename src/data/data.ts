@@ -90,6 +90,7 @@ export const DATA = {
   email: "hendys.work@gmail.com",
   github: "https://github.com/ndy-s",
   linkedin: "https://www.linkedin.com/in/hendy-saputra/",
+  resume: "https://drive.google.com/file/d/1eUb-hSrh6sovipaZ7sT_RA9Z8e504XHz/view?usp=share_link",
   services: [
     {
       title: "App Development",
@@ -254,7 +255,7 @@ export const PROJECTS: Project[] = [
       "Integrates with WhatsApp (via Baileys) and Telegram for a natural conversational interface.",
       "Background scheduler utilizing node-cron for proactive intelligent check-ins based on meal timings."
     ],
-    tags: ["React", "Node.js", "Gemini", "DeepSeek", "WhatsApp API", "SQLite"],
+    tags: ["React", "Node.js", "Gemini", "DeepSeek", "Baileys", "SQLite"],
     github: "https://github.com/ndy-s/ai-fitness-tracker",
     media: [
       {
