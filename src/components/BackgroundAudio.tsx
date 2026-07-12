@@ -2,11 +2,14 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLoading } from "./LoadingProvider"
 
 export function BackgroundAudio() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const [hasAutoPlayed, setHasAutoPlayed] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const isLoaded = useLoading()
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -36,6 +39,27 @@ export function BackgroundAudio() {
     }
   }, [])
 
+  useEffect(() => {
+    if (isLoaded && !hasAutoPlayed && audioRef.current) {
+      const playPromise = audioRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true)
+            setHasError(false)
+            setHasAutoPlayed(true)
+          })
+          .catch((error) => {
+            console.error("Audio auto-playback failed:", error)
+            setHasError(true)
+            setHasAutoPlayed(true)
+          })
+      } else {
+        setHasAutoPlayed(true)
+      }
+    }
+  }, [isLoaded, hasAutoPlayed])
+
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 group">
       <audio
@@ -49,13 +73,6 @@ export function BackgroundAudio() {
         <div className="absolute bottom-full right-0 mb-4 w-48 p-2 bg-red-500/10 border border-red-500/20 text-red-500 text-xs rounded-lg backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
           Audio file not found. Please add ambient.mp3 to your public/ folder.
         </div>
-      )}
-
-      {/* Indicator when not playing */}
-      {!isPlaying && !hasError && (
-        <span className="absolute right-[120%] top-1/2 -translate-y-1/2 text-xs font-medium whitespace-nowrap bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white/90 animate-pulse pointer-events-none">
-          Enable cosmic ambiance
-        </span>
       )}
 
       <motion.button

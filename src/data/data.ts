@@ -57,9 +57,7 @@ export type Project = {
   story?: string;
   details: string[];
   tags: string[];
-  link?: string;
   github?: string;
-  demo?: string;
   media?: ProjectMedia[];
   comingSoon?: boolean;
 };
@@ -177,13 +175,150 @@ export const DATA = {
 
 export const PROJECTS: Project[] = [
   {
-    title: "Portfolio Website",
-    description: "A personal portfolio featuring a real-time N-body physics simulation as its interactive background.",
-    story: "This portfolio is more than a static page, the background is a live physics sandbox running an N-body gravitational simulation on HTML5 Canvas. Every celestial body has mass and velocity, interacting through Newtonian gravity in real-time. You can grab planets, fling them into black holes, and watch collisions scatter debris with synthesized audio feedback. The rendering pipeline adapts to your device hardware, automatically scaling visual fidelity and physics complexity across three performance tiers to ensure smooth frame rates on any device.",
-    details: [],
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Canvas", "Web Audio API"],
-    github: "https://github.com/ndy-s/portfolio",
-    demo: "https://hendy.dev",
+    title: "Open Bank",
+    description: "A modern, open-source banking platform currently under development.",
+    story: "This project is currently in the works. It aims to provide a comprehensive, secure, and highly scalable open-source banking platform.",
+    details: [
+      "Architecture and feature set are actively being finalized.",
+      "Focused on building a robust backend for financial transactions."
+    ],
+    tags: ["Go", "PostgreSQL", "Banking", "Fintech"],
+    github: "https://github.com/ndy-s/open-bank",
     comingSoon: true,
   },
+  {
+    title: "Portfolio Website",
+    description: "A personal portfolio featuring a real-time N-body physics simulation as its interactive background.",
+    story: "This portfolio was designed to be more than a static page. It is a live physics sandbox that turns browsing into an interactive experience. I wanted to build something that reflects my curiosity for space and complex systems, letting users playfully interact with celestial bodies and watch collisions unfold in real-time.",
+    details: [
+      "Real-time N-body gravitational simulation rendered entirely on HTML5 Canvas.",
+      "Synthesized audio feedback generated via the Web Audio API based on physics interactions.",
+      "Adaptive rendering pipeline that automatically scales physics fidelity across three performance tiers for stable framerates."
+    ],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Canvas", "Web Audio API"],
+    github: "https://github.com/ndy-s/portfolio",
+  },
+  {
+    title: "WhatsApp Multi-Agent Ops",
+    description: "Multi-agent WhatsApp automation that turns natural conversation into live API calls and SQL operations.",
+    story: "Started as an experiment to push agentic AI to handle daily repetitive tasks, this project grew into a full multi-agent system. The goal was to replace context-switching between SQL editors and internal tools with a simple conversational interface on WhatsApp. By chatting with the bot like a coworker, requests are seamlessly routed to specialized agents capable of executing tasks.\n\nP.S. This was built as an early exploration when AI agents were just emerging and served primarily for learning purposes. There are likely more established solutions for this today.",
+    details: [
+      "Multi-agent architecture utilizing LangChain, Gemini, and DeepSeek for dynamic request routing and task delegation.",
+      "Retrieval-Augmented Generation (RAG) with MiniLM embeddings to pull only relevant API/DB registries into context.",
+      "Secure SQL execution restricted to predefined, human-reviewed queries with a 60-second user confirmation window.",
+      "Self-healing validation-and-retry loops to catch and correct malformed structured outputs before execution.",
+      "Operates entirely on free-tier models for zero-cost daily running with an easy swap-in path for paid models."
+    ],
+    tags: ["Node.js", "LangChain", "Baileys", "Gemini", "DeepSeek", "Vector Embeddings"],
+    github: "https://github.com/ndy-s/wa-multi-agent-ops",
+    media: [
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/wa-multi-agent-ops/main/assets/api-agent-demo.gif",
+        alt: "API Agent Demo"
+      },
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/wa-multi-agent-ops/main/assets/sql-agent-demo.gif",
+        alt: "SQL Agent Demo"
+      }
+    ]
+  },
+  {
+    title: "Puppet Browser",
+    description: "A lightweight web app to remotely control a headless browser across a local network.",
+    story: "Born out of curiosity about how remote desktop connections work, I built a lightweight version that targets just a web browser. Using Puppeteer and Socket.IO, it streams the browser's view and transmits keyboard/mouse inputs over a local network, giving offline PCs a fully functional browser without needing direct internet access.",
+    details: [
+      "Uses Puppeteer to launch and interact with a Chromium instance programmatically.",
+      "Real-time screenshot capture and streaming to the client via Socket.IO.",
+      "Intercepts and transmits complex input events (clicks, scrolls, keyboard) and handles cross-device clipboard operations.",
+      "Implements a sequential action queue to prevent overlapping commands and manual history management."
+    ],
+    tags: ["Node.js", "Puppeteer", "Socket.IO", "Remote Control"],
+    github: "https://github.com/ndy-s/puppet-browser",
+    media: [
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/puppet-browser/main/assets/preview.gif",
+        alt: "Puppet Browser Demo"
+      }
+    ]
+  },
+  {
+    title: "AI Fitness Tracker",
+    description: "A personal fitness coach that tracks workouts, meals, and progress via conversational messaging.",
+    story: "I wanted a simpler way to track my fitness progress without navigating complicated app menus. This assistant acts like a personal coach on WhatsApp or Telegram, estimating calories, logging workouts, and providing intelligent daily check-ins. It handles natural language seamlessly, so you can just text what you ate or lifted and the AI does the rest.",
+    details: [
+      "Multi-provider AI fallback system integrating Gemini 2.5 Flash and DeepSeek V4 for high reliability.",
+      "Local Node.js backend with an interactive React Vite glassmorphism dashboard.",
+      "Integrates with WhatsApp (via Baileys) and Telegram for a natural conversational interface.",
+      "Background scheduler utilizing node-cron for proactive intelligent check-ins based on meal timings."
+    ],
+    tags: ["React", "Node.js", "Gemini", "DeepSeek", "WhatsApp API", "SQLite"],
+    github: "https://github.com/ndy-s/ai-fitness-tracker",
+    media: [
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/ai-fitness-tracker/main/assets/ui.jpeg",
+        alt: "AI Fitness Tracker Dashboard"
+      }
+    ]
+  },
+  {
+    title: "Quest OS",
+    description: "An Obsidian vault that acts as a local operating system for your ambitions, powered by Claude and MCP.",
+    story: "I wanted my goals to feel like quests in a video game rather than chores. Quest OS automates the daily planning overhead by generating a structured journey system and integrating with Claude via the Model Context Protocol (MCP). You define your goal once, and the system handles the daily execution loop locally within your Obsidian vault.",
+    details: [
+      "Uses Model Context Protocol (MCP) to allow Claude to read and write directly to a local Obsidian vault.",
+      "Automates project planning and progress tracking using custom system prompts and a daily quest loop.",
+      "Designed as a closed-loop system where AI handles meta-work so you can focus on execution."
+    ],
+    tags: ["Obsidian", "Claude", "MCP", "Docker", "Productivity"],
+    github: "https://github.com/ndy-s/quest-os",
+  },
+  {
+    title: "EFAMS",
+    description: "A transactional dashboard template inspired by enterprise banking systems, built for the modern web.",
+    story: "I built this to explore how the robust, rigid design patterns of enterprise banking applications could be adapted to a modern frontend stack. Discontent with the clunky designs at my previous job, I extracted core banking concepts, like strict page modes, menu codes, and persistent global context, and applied them to a clean React application built with Vite.",
+    details: [
+      "Implements strict page modes (Entry, Cancel, Inquiry) to rigidly control data workflows.",
+      "Uses a global context bar to persist session information like transaction date, branch, and user group.",
+      "Features native client-side parsing of raw .xlsx files using exceljs and xlsx for batch uploads and reporting.",
+      "Provides quick navigation through structured Menu Codes (e.g., EP11, FA01)."
+    ],
+    tags: ["React", "Vite", "Dashboard", "Banking"],
+    github: "https://github.com/ndy-s/efams",
+    media: [
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/efams/main/assets/preview.png",
+        alt: "EFAMS Dashboard"
+      }
+    ]
+  },
+  {
+    title: "Anitopia",
+    description: "A text-based anime RPG Discord bot featuring turn-based battles and character collection.",
+    story: "This is my oldest and most ambitious project: a full-fledged turn-based RPG built right into Discord. You can summon characters, build teams, and duel other players. The complexities eventually outgrew what I could manage alone, so it remains incomplete, but the core mechanics and robust user experience features are fully functional. With the current capabilities of AI coding agents, I plan to revisit and develop it much faster in the future.",
+    details: [
+      "Developed a complete turn-based RPG battle system accessible entirely via Discord slash commands.",
+      "Built an extensive character collection and gacha system with daily summons and team management.",
+      "Maximized user experience by integrating advanced profile customization and interactive menus.",
+      "Backed by MongoDB and Redis for high-performance state management and data persistence."
+    ],
+    tags: ["Discord Bot", "Node.js", "MongoDB", "Redis", "RPG"],
+    github: "https://github.com/ndy-s/anitopia",
+    media: [
+      {
+        type: "image",
+        src: "https://raw.githubusercontent.com/ndy-s/anitopia/main/src/public/anitopia_demo.png",
+        alt: "Anitopia Character Collection"
+      },
+      {
+        type: "image",
+        src: "https://private-user-images.githubusercontent.com/94002483/326232897-acab4638-0d51-4c7a-9684-174fcf5b53f0.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODM4MTQ3MTUsIm5iZiI6MTc4MzgxNDQxNSwicGF0aCI6Ii85NDAwMjQ4My8zMjYyMzI4OTctYWNhYjQ2MzgtMGQ1MS00YzdhLTk2ODQtMTc0ZmNmNWI1M2YwLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA3MTIlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwNzEyVDAwMDAxNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTVhYjBkY2QzMDQzZDMzYjYzNGMwYzRjZTFhZDJhZWQ0MDM3M2RjMzJmN2E4NzNkNDNmNDNmZWM1MTY5MDgzZWYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRmdpZiJ9.g1gLNY6Ev5-3S182p4arP-UoUKkCXcF2TB2_DB7pnlI",
+        alt: "Anitopia Gameplay Demo"
+      }
+    ]
+  }
 ];

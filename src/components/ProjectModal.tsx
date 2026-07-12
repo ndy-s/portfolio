@@ -87,6 +87,14 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 {project.story || project.description}
               </p>
 
+              {project.details && project.details.length > 0 && (
+                <ul className="list-disc list-inside text-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed space-y-1">
+                  {project.details.map((detail, index) => (
+                    <li key={index}>{detail}</li>
+                  ))}
+                </ul>
+              )}
+
               <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                 {project.tags.map((tag) => (
                   <span
@@ -99,16 +107,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 pt-4 border-t border-border">
-                {project.demo && (
-                  <a
-                    href={project.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium transition-transform hover:scale-105 active:scale-95"
-                  >
-                    Live Demo
-                  </a>
-                )}
                 {project.github && (
                   <a
                     href={project.github}
