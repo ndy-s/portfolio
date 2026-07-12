@@ -729,6 +729,7 @@ export function StarField() {
   const animFrameRef = useRef<number>(0)
   const lastCometTimeRef = useRef(0)
   const lastShootingStarTimeRef = useRef(0)
+  const lastEncounterTimeRef = useRef(0)
 
   const { resolvedTheme } = useTheme()
   const themeRef = useRef(resolvedTheme)
@@ -1523,6 +1524,47 @@ export function StarField() {
       const bodies = bodiesRef.current
       const targetBodyCount = getBodyCount(w, h, tier)
       const toRemove: number[] = [] // indices to remove after collision
+
+      // Random gravitational encounter — nudge a body toward another to trigger collisions
+      const encounterInterval = Math.random() * 25000 + 25000 // 25-50 seconds
+      if (time - lastEncounterTimeRef.current > encounterInterval && bodies.length >= 2) {
+        lastEncounterTimeRef.current = time
+
+        // Find eligible bodies (not dragged)
+        const eligible = bodies.filter(b => !b.isDragging)
+        if (eligible.length >= 2) {
+          // Pick a random "prey" body (prefer non-blackhole)
+          const nonBH = eligible.filter(b => b.type !== "blackhole")
+          const prey = nonBH.length > 0
+            ? nonBH[Math.floor(Math.random() * nonBH.length)]
+            : eligible[Math.floor(Math.random() * eligible.length)]
+
+          // Find nearest other body to nudge toward
+          let nearest: CelestialBody | null = null
+          let nearestDist = Infinity
+          for (const other of eligible) {
+            if (other.id === prey.id) continue
+            const d = Math.hypot(other.x - prey.x, other.y - prey.y)
+            if (d < nearestDist) {
+              nearestDist = d
+              nearest = other
+            }
+          }
+
+          if (nearest) {
+            // Place them at similar depth so they can collide
+            prey.z = nearest.z + (Math.random() - 0.5) * 50
+
+            // Give prey a velocity nudge toward the target
+            const dx = nearest.x - prey.x
+            const dy = nearest.y - prey.y
+            const dist = Math.hypot(dx, dy) || 1
+            const nudgeStrength = Math.random() * 1.5 + 1.0
+            prey.vx += (dx / dist) * nudgeStrength
+            prey.vy += (dy / dist) * nudgeStrength
+          }
+        }
+      }
 
       // Black hole gravity — strong pull + orbital spiral for nearby bodies
       for (const bh of bodies) {
