@@ -52,9 +52,11 @@ export function Projects() {
                             <SiGithub className="w-4 h-4" />
                           </span>
                         )}
-                        <span className={`text-xs font-medium px-2 py-1 rounded border flex items-center shrink-0 ${project.comingSoon ? 'text-amber-500 border-amber-500/30 bg-amber-500/10' : 'bg-background text-muted'}`}>
-                          {project.comingSoon ? "Coming Soon" : "View Details"}
-                        </span>
+                        {project.comingSoon && (
+                          <span className="text-xs font-medium px-2 py-1 rounded border flex items-center shrink-0 text-amber-500 border-amber-500/30 bg-amber-500/10">
+                            Coming Soon
+                          </span>
+                        )}
                       </div>
                     </div>
                     <p className="text-muted text-sm mb-4 leading-relaxed line-clamp-2">
