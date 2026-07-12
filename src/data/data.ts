@@ -277,6 +277,19 @@ export const PROJECTS: Project[] = [
     github: "https://github.com/ndy-s/quest-os",
   },
   {
+    title: "AutOTP",
+    description: "A browser extension that locally stores TOTP secrets and autofills 2FA codes.",
+    story: "I built this out of frustration with the daily ritual of reaching for my phone to check 2FA codes every time I logged into an account. It is a browser extension that stores TOTP secrets locally and seamlessly autofills the six-digit codes when a login page is detected. It is designed for convenience without relying on cloud sync or remote servers.",
+    details: [
+      "Stores TOTP secrets securely in browser-encrypted local storage without external network requests.",
+      "Automatically detects and autofills 2FA input fields across various websites and SPAs.",
+      "Supports adding secrets by pasting screenshots or uploading QR code images directly.",
+      "Built with TypeScript and Vite, fully compliant with Manifest V3."
+    ],
+    tags: ["TypeScript", "Vite", "Browser Extension", "Security"],
+    github: "https://github.com/ndy-s/auto-otp",
+  },
+  {
     title: "Expense & Fixed Asset Management System (EFAMS)",
     description: "A transactional dashboard template inspired by enterprise banking systems, built for the modern web.",
     story: "I built this to explore how the robust, rigid design patterns of enterprise banking applications could be adapted to a modern frontend stack. Discontent with the clunky designs at my previous job, I extracted core banking concepts, like strict page modes, menu codes, and persistent global context, and applied them to a clean React application built with Vite.",
