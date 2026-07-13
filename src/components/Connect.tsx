@@ -42,7 +42,7 @@ export function Connect() {
           <FaLinkedin className="h-4 w-4" />
           LinkedIn
         </a>
-        <a
+        {/*<a
           href={DATA.resume}
           target="_blank"
           rel="noopener noreferrer"
@@ -50,7 +50,7 @@ export function Connect() {
         >
           <FaFileAlt className="h-4 w-4" />
           Resume
-        </a>
+        </a>*/}
       </div>
     </AnimatedSection>
   )
