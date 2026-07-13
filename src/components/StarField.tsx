@@ -19,7 +19,12 @@ interface Star {
   x: number
   y: number
   z: number
+  prevX: number
+  prevY: number
   prevZ: number
+  vx: number
+  vy: number
+  zSpeedFactor: number
   size: number
   brightness: number
   twinkleSpeed: number
@@ -46,6 +51,7 @@ interface CelestialBody {
   isDragging: boolean
   swallowPulse?: number
   pulseOffset?: number
+  zSpeedFactor?: number
 }
 
 interface CollisionParticle {
@@ -632,6 +638,154 @@ const MAX_DEPTH = 1000
 const BASE_SPEED = 0.8
 const WARP_MULTIPLIER = 1.2
 
+type SpawnDirection =
+  | "ahead"
+  | "left"
+  | "right"
+  | "top"
+  | "bottom"
+  | "topLeft"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomRight"
+  | "behind"
+
+interface DirectionalSpawn {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  z: number
+  zSpeedFactor: number
+}
+
+function getFrustumHalfExtents(width: number, height: number, z: number) {
+  return {
+    halfX: (width / 2) * z / (width / 4),
+    halfY: (height / 2) * z / (height / 4),
+  }
+}
+
+function pickSpawnDirection(): SpawnDirection {
+  const r = Math.random()
+  if (r < 0.30) return "ahead"
+  if (r < 0.40) return "left"
+  if (r < 0.50) return "right"
+  if (r < 0.58) return "top"
+  if (r < 0.66) return "bottom"
+  if (r < 0.73) return "topLeft"
+  if (r < 0.80) return "topRight"
+  if (r < 0.87) return "bottomLeft"
+  if (r < 0.94) return "bottomRight"
+  return "behind"
+}
+
+function spawnDirectional(
+  width: number,
+  height: number,
+  direction: SpawnDirection,
+  z: number = MAX_DEPTH,
+  lateralScale = 1,
+): DirectionalSpawn {
+  const { halfX, halfY } = getFrustumHalfExtents(width, height, z)
+  const margin = 1.12 + Math.random() * 0.25
+  const crossSpeed = (1.5 + Math.random() * 2.5) * lateralScale
+  const drift = (Math.random() - 0.5) * 0.6 * lateralScale
+
+  switch (direction) {
+    case "left":
+      return {
+        x: -halfX * margin - Math.random() * halfX * 0.4,
+        y: (Math.random() - 0.5) * halfY * 1.8,
+        vx: crossSpeed,
+        vy: drift,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "right":
+      return {
+        x: halfX * margin + Math.random() * halfX * 0.4,
+        y: (Math.random() - 0.5) * halfY * 1.8,
+        vx: -crossSpeed,
+        vy: drift,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "top":
+      return {
+        x: (Math.random() - 0.5) * halfX * 1.8,
+        y: -halfY * margin - Math.random() * halfY * 0.4,
+        vx: drift,
+        vy: crossSpeed,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "bottom":
+      return {
+        x: (Math.random() - 0.5) * halfX * 1.8,
+        y: halfY * margin + Math.random() * halfY * 0.4,
+        vx: drift,
+        vy: -crossSpeed,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "topLeft":
+      return {
+        x: -halfX * margin,
+        y: -halfY * margin,
+        vx: crossSpeed * 0.7,
+        vy: crossSpeed * 0.7,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "topRight":
+      return {
+        x: halfX * margin,
+        y: -halfY * margin,
+        vx: -crossSpeed * 0.7,
+        vy: crossSpeed * 0.7,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "bottomLeft":
+      return {
+        x: -halfX * margin,
+        y: halfY * margin,
+        vx: crossSpeed * 0.7,
+        vy: -crossSpeed * 0.7,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "bottomRight":
+      return {
+        x: halfX * margin,
+        y: halfY * margin,
+        vx: -crossSpeed * 0.7,
+        vy: -crossSpeed * 0.7,
+        z,
+        zSpeedFactor: 1,
+      }
+    case "behind":
+      return {
+        x: (Math.random() - 0.5) * halfX * 1.6,
+        y: (Math.random() - 0.5) * halfY * 1.6,
+        vx: (Math.random() - 0.5) * 1.2 * lateralScale,
+        vy: (Math.random() - 0.5) * 1.2 * lateralScale,
+        z: 40 + Math.random() * 120,
+        zSpeedFactor: -0.35,
+      }
+    default:
+      return {
+        x: (Math.random() - 0.5) * halfX * 1.6,
+        y: (Math.random() - 0.5) * halfY * 1.6,
+        vx: (Math.random() - 0.5) * 0.8 * lateralScale,
+        vy: (Math.random() - 0.5) * 0.8 * lateralScale,
+        z,
+        zSpeedFactor: 1,
+      }
+  }
+}
+
 // Helper to generate a new celestial body
 function generateBody(width: number, height: number): CelestialBody {
   const typeRoll = Math.random()
@@ -672,13 +826,18 @@ function generateBody(width: number, height: number): CelestialBody {
     ? Math.PI * radius * radius * 8
     : Math.PI * radius * radius) * config.massMultiplier
 
+  const direction = pickSpawnDirection()
+  const spawnZ = direction === "behind" ? 40 + Math.random() * 120 : Math.random() * MAX_DEPTH
+  const spawn = spawnDirectional(width, height, direction, spawnZ)
+
   return {
     id: 0,
-    x: (Math.random() - 0.5) * width * 3,
-    y: (Math.random() - 0.5) * height * 3,
-    z: Math.random() * MAX_DEPTH,
-    vx: (Math.random() - 0.5) * 1.5,
-    vy: (Math.random() - 0.5) * 1.5,
+    x: spawn.x,
+    y: spawn.y,
+    z: spawn.z,
+    vx: spawn.vx,
+    vy: spawn.vy,
+    zSpeedFactor: spawn.zSpeedFactor,
     radius,
     mass,
     type,
@@ -946,11 +1105,20 @@ export function StarField() {
     else if (colorRoll < 0.80) colorIndex = 5
     else colorIndex = 6
 
+    const direction = pickSpawnDirection()
+    const spawnZ = direction === "behind" ? 40 + Math.random() * 200 : Math.random() * MAX_DEPTH
+    const spawn = spawnDirectional(width, height, direction, spawnZ, 0.15)
+
     return {
-      x: (Math.random() - 0.5) * width * 2,
-      y: (Math.random() - 0.5) * height * 2,
-      z: Math.random() * MAX_DEPTH,
-      prevZ: MAX_DEPTH,
+      x: spawn.x,
+      y: spawn.y,
+      z: spawn.z,
+      prevX: spawn.x,
+      prevY: spawn.y,
+      prevZ: spawn.z,
+      vx: spawn.vx,
+      vy: spawn.vy,
+      zSpeedFactor: spawn.zSpeedFactor,
       size: Math.random() * 1.5 + (colorRoll > 0.8 ? 0.2 : 0.5),
       brightness: Math.random() > 0.4 ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3 + 0.1,
       twinkleSpeed: Math.random() * 2 + 1,
@@ -1461,26 +1629,41 @@ export function StarField() {
 
       // Stars
       for (const star of starsRef.current) {
+        star.prevX = star.x
+        star.prevY = star.y
         star.prevZ = star.z
-        star.z -= speed * dt
+        star.z -= speed * dt * (star.zSpeedFactor ?? 1)
+        star.x += star.vx * dt
+        star.y += star.vy * dt
 
-        if (star.z <= 0) {
-          star.x = (Math.random() - 0.5) * w * 2
-          star.y = (Math.random() - 0.5) * h * 2
-          star.z = MAX_DEPTH
-          star.prevZ = MAX_DEPTH
+        const respawnStar = () => {
+          const spawn = spawnDirectional(w, h, pickSpawnDirection(), MAX_DEPTH, 0.15)
+          star.x = spawn.x
+          star.y = spawn.y
+          star.z = spawn.z
+          star.prevX = spawn.x
+          star.prevY = spawn.y
+          star.prevZ = spawn.z
+          star.vx = spawn.vx
+          star.vy = spawn.vy
+          star.zSpeedFactor = spawn.zSpeedFactor
         }
-        if (star.z >= MAX_DEPTH) {
-          star.x = (Math.random() - 0.5) * w * 2
-          star.y = (Math.random() - 0.5) * h * 2
-          star.z = 1 + Math.random() * 100
-          star.prevZ = star.z
+
+        const starZFactor = star.zSpeedFactor ?? 1
+        if (starZFactor >= 0 && star.z <= 0) {
+          respawnStar()
+        }
+        if (starZFactor < 0 && star.z >= MAX_DEPTH) {
+          respawnStar()
+        }
+        if (starZFactor >= 0 && star.z >= MAX_DEPTH) {
+          respawnStar()
         }
 
         const sx = (star.x / star.z) * (w / 4) + cx
         const sy = (star.y / star.z) * (h / 4) + cy
-        const psx = (star.x / star.prevZ) * (w / 4) + cx
-        const psy = (star.y / star.prevZ) * (h / 4) + cy
+        const psx = (star.prevX / star.prevZ) * (w / 4) + cx
+        const psy = (star.prevY / star.prevZ) * (h / 4) + cy
         const depthFactor = 1 - star.z / MAX_DEPTH
         const size = star.size * depthFactor * 2.5
         const twinkle = Math.sin(time * 0.001 * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7
@@ -1602,7 +1785,8 @@ export function StarField() {
 
         // Z-axis movement (warp speed) - skip for dragged bodies
         if (!body.isDragging) {
-          body.z -= speed * dt * 0.2
+          const zFactor = body.zSpeedFactor ?? 1
+          body.z -= speed * dt * 0.2 * zFactor
           body.vx *= FRICTION
           body.vy *= FRICTION
 
@@ -1769,7 +1953,9 @@ export function StarField() {
         while (bodies.length < targetBodyCount) {
           const newBody = generateBody(w, h)
           newBody.id = Math.max(...bodies.map(b => b.id), 0) + 1
-          newBody.z = MAX_DEPTH // spawn far away
+          if ((newBody.zSpeedFactor ?? 1) >= 0) {
+            newBody.z = MAX_DEPTH
+          }
           bodies.push(newBody)
         }
       }
@@ -1781,13 +1967,17 @@ export function StarField() {
         const depthFactor = 1 - body.z / MAX_DEPTH
         const projSize = body.radius * depthFactor
 
-        // Respawn if passed the camera or went way off screen (but never while dragging)
-        if (!body.isDragging && (body.z <= 10 || bx < -w || bx > w * 2 || by < -h || by > h * 2)) {
+        // Respawn if passed the camera, receded behind, or went way off screen (but never while dragging)
+        const zFactor = body.zSpeedFactor ?? 1
+        const passedCamera = zFactor >= 0 ? body.z <= 10 : body.z >= MAX_DEPTH - 20
+        if (!body.isDragging && (passedCamera || bx < -w || bx > w * 2 || by < -h || by > h * 2)) {
           const newBody = generateBody(w, h)
           const oldId = body.id
           Object.assign(body, newBody)
           body.id = oldId // keep original id
-          body.z = MAX_DEPTH
+          if ((body.zSpeedFactor ?? 1) >= 0) {
+            body.z = MAX_DEPTH
+          }
           if (dragStateRef.current.activeBodyId === oldId) {
             dragStateRef.current.activeBodyId = null
             canvasRef.current?.style.setProperty('cursor', 'default')
