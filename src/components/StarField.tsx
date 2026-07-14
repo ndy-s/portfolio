@@ -32,6 +32,24 @@ interface Star {
   colorIndex: number
 }
 
+interface CollisionScar {
+  intensity: number    // 1.0 → 0.0 as it fades
+  angle: number        // impact direction (radians)
+  color: string        // RGB string from the absorbed body
+  type: "flare" | "crater" | "heat"  // visual style
+}
+
+interface ShockwaveRing {
+  x: number
+  y: number
+  radius: number
+  maxRadius: number
+  life: number
+  maxLife: number
+  color: string
+  intensity: number
+}
+
 interface CelestialBody {
   id: number
   x: number
@@ -52,6 +70,7 @@ interface CelestialBody {
   swallowPulse?: number
   pulseOffset?: number
   zSpeedFactor?: number
+  collisionScar?: CollisionScar
 }
 
 interface CollisionParticle {
@@ -403,6 +422,40 @@ const BLACK_HOLE_GRAVITY = 0.012
 const BLACK_HOLE_ORBIT = 0.004
 const BLACK_HOLE_INFLUENCE = 2.5 // multiplier of screen width
 const SWALLOW_DURATION = 55 // frames at ~60fps
+
+// Collision hierarchy: higher rank always wins
+const TYPE_RANK: Record<CelestialBody["type"], number> = {
+  blackhole: 4,
+  sun: 3,
+  planet: 2,
+  "asteroid-cluster": 1,
+  asteroid: 1,
+}
+
+function getCollisionWinner(
+  a: CelestialBody,
+  aIdx: number,
+  b: CelestialBody,
+  bIdx: number
+): { bigger: CelestialBody; smaller: CelestialBody; smallerIdx: number } {
+  const rankA = TYPE_RANK[a.type]
+  const rankB = TYPE_RANK[b.type]
+  if (rankA !== rankB) {
+    return rankA > rankB
+      ? { bigger: a, smaller: b, smallerIdx: bIdx }
+      : { bigger: b, smaller: a, smallerIdx: aIdx }
+  }
+  // Same rank — heavier wins
+  return a.mass >= b.mass
+    ? { bigger: a, smaller: b, smallerIdx: bIdx }
+    : { bigger: b, smaller: a, smallerIdx: aIdx }
+}
+
+function getScarType(bodyType: CelestialBody["type"]): CollisionScar["type"] {
+  if (bodyType === "sun") return "flare"
+  if (bodyType === "planet") return "crater"
+  return "heat"
+}
 
 function getEffectiveMass(body: CelestialBody): number {
   if (body.type === "sun") {
@@ -863,6 +916,7 @@ export function StarField() {
   const shootingStarsRef = useRef<ShootingStar[]>([])
   const nebulaeRef = useRef<NebulaCloud[]>([])
   const particlesRef = useRef<CollisionParticle[]>([])
+  const shockwavesRef = useRef<ShockwaveRing[]>([])
   const swallowingRef = useRef<SwallowEffect[]>([])
   const activeTooltipRef = useRef<{ kind: TooltipInfo["kind"]; trackId: number } | null>(null)
   const nextCometIdRef = useRef(1)
@@ -1822,24 +1876,8 @@ export function StarField() {
 
           const swallowThreshold = hasBlackHole ? minDist * 0.85 : minDist * 0.7
           if (dist < swallowThreshold) {
-            // Black hole always absorbs; otherwise bigger absorbs smaller
-            let bigger: CelestialBody
-            let smaller: CelestialBody
-            let smallerIdx: number
-
-            if (body.type === "blackhole" && other.type !== "blackhole") {
-              bigger = body
-              smaller = other
-              smallerIdx = j
-            } else if (other.type === "blackhole" && body.type !== "blackhole") {
-              bigger = other
-              smaller = body
-              smallerIdx = i
-            } else {
-              bigger = body.mass >= other.mass ? body : other
-              smaller = body.mass >= other.mass ? other : body
-              smallerIdx = body.mass >= other.mass ? j : i
-            }
+            // Use type-rank hierarchy to determine winner
+            const { bigger, smaller, smallerIdx } = getCollisionWinner(body, i, other, j)
 
             // Skip if dragging the smaller one (don't destroy what user is holding)
             if (smaller.isDragging) continue
@@ -1870,7 +1908,7 @@ export function StarField() {
               playSwallowSound(Math.min(smaller.mass / 2000, 1.0))
 
               const newMass = bigger.mass + smaller.mass * 0.5
-              bigger.radius = Math.sqrt(newMass / Math.PI)
+              bigger.radius = bigger.radius * Math.sqrt(newMass / bigger.mass)
               bigger.mass = newMass
               bigger.rotationSpeed += 0.01
               bigger.swallowPulse = 1
@@ -1884,44 +1922,110 @@ export function StarField() {
               continue
             }
 
-            // Standard planet-on-planet collision
+            // Standard collision (non-blackhole)
             playCollisionSound(Math.min((bigger.mass + smaller.mass) / 3000, 1.0))
 
-            // Spawn debris particles at collision point
+            // Collision point in world space
             const collisionX = (body.x + other.x) / 2
             const collisionY = (body.y + other.y) / 2
             const collisionZ = (body.z + other.z) / 2
-            let debrisCount = Math.floor(Math.random() * 8 + 6)
+            const screenCX = (collisionX / collisionZ) * (w / 4) + cx
+            const screenCY = (collisionY / collisionZ) * (h / 4) + cy
+
+            // --- Enhanced Debris ---
+            let debrisCount = Math.floor(Math.random() * 10 + 8)
             if (smaller.type === "asteroid-cluster") {
-              debrisCount += 15 // massive debris scatter for a cluster breaking apart
+              debrisCount += 15
             }
             if (tier === "low") debrisCount = Math.floor(debrisCount * 0.3)
             else if (tier === "medium") debrisCount = Math.floor(debrisCount * 0.6)
 
+            const smallerColor = smaller.color === "0, 0, 0" ? "255, 200, 100" : smaller.color
+            const biggerColor = bigger.color === "0, 0, 0" ? "255, 200, 100" : bigger.color
+
             for (let p = 0; p < debrisCount; p++) {
               const angle = (p / debrisCount) * Math.PI * 2 + Math.random() * 0.5
               const spd = Math.random() * 3 + 1.5 + (smaller.type === "asteroid-cluster" ? Math.random() * 2 : 0)
+              // Mix colors from both bodies — mostly from the loser, some from winner
+              const useWinnerColor = Math.random() < 0.25
+              const debrisColor = useWinnerColor ? biggerColor : smallerColor
+              // Varied sizes — some large chunks, mostly fine particles
+              const sizeRoll = Math.random()
+              const debrisSize = sizeRoll < 0.15
+                ? Math.random() * 5 + 3   // large chunk
+                : sizeRoll < 0.4
+                  ? Math.random() * 3 + 1.5 // medium
+                  : Math.random() * 2 + 0.5 // fine
               particlesRef.current.push({
-                x: (collisionX / collisionZ) * (w / 4) + cx,
-                y: (collisionY / collisionZ) * (h / 4) + cy,
+                x: screenCX,
+                y: screenCY,
                 vx: Math.cos(angle) * spd,
                 vy: Math.sin(angle) * spd,
-                size: Math.random() * 3 + 1,
+                size: debrisSize,
                 life: 0,
-                maxLife: Math.random() * 40 + 20,
-                color: smaller.color === "0, 0, 0" ? "255, 200, 100" : smaller.color,
+                maxLife: Math.random() * 45 + 20,
+                color: debrisColor,
+              })
+            }
+
+            // Orbital debris — a few particles that curve around the winner
+            if (tier !== "low") {
+              const orbitalCount = Math.floor(Math.random() * 3 + 2)
+              const biggerScreenX = (bigger.x / bigger.z) * (w / 4) + cx
+              const biggerScreenY = (bigger.y / bigger.z) * (h / 4) + cy
+              const depthF = 1 - bigger.z / MAX_DEPTH
+              const biggerProjSize = bigger.radius * depthF
+              for (let p = 0; p < orbitalCount; p++) {
+                const orbAngle = Math.random() * Math.PI * 2
+                const orbDist = biggerProjSize * (1.5 + Math.random() * 1.5)
+                const orbSpd = 1.5 + Math.random() * 1.5
+                // Tangential velocity for orbit
+                particlesRef.current.push({
+                  x: biggerScreenX + Math.cos(orbAngle) * orbDist,
+                  y: biggerScreenY + Math.sin(orbAngle) * orbDist,
+                  vx: Math.cos(orbAngle + Math.PI / 2) * orbSpd,
+                  vy: Math.sin(orbAngle + Math.PI / 2) * orbSpd,
+                  size: Math.random() * 2 + 1,
+                  life: 0,
+                  maxLife: Math.random() * 50 + 35,
+                  color: smallerColor,
+                })
+              }
+            }
+
+            // --- Shockwave Ring ---
+            if (tier !== "low") {
+              const depthFactorShock = 1 - collisionZ / MAX_DEPTH
+              shockwavesRef.current.push({
+                x: screenCX,
+                y: screenCY,
+                radius: 0,
+                maxRadius: (bigger.radius + smaller.radius) * depthFactorShock * 4,
+                life: 0,
+                maxLife: 30,
+                color: smallerColor,
+                intensity: Math.min((bigger.mass + smaller.mass) / 2000, 1),
               })
             }
 
             // Bigger body absorbs smaller: grow in mass and radius
             const newMass = bigger.mass + smaller.mass * 0.3
-            bigger.radius = Math.sqrt(newMass / Math.PI)
+            bigger.radius = bigger.radius * Math.sqrt(newMass / bigger.mass)
             bigger.mass = newMass
 
             // Inherit some momentum from the smaller body
             const totalMass = bigger.mass + smaller.mass
             bigger.vx = (bigger.vx * bigger.mass + smaller.vx * smaller.mass) / totalMass
             bigger.vy = (bigger.vy * bigger.mass + smaller.vy * smaller.mass) / totalMass
+
+            // --- Collision Scar on the winner ---
+            const impactAngle = Math.atan2(smaller.y - bigger.y, smaller.x - bigger.x)
+            bigger.collisionScar = {
+              intensity: 1.0,
+              angle: impactAngle,
+              color: smallerColor,
+              type: getScarType(bigger.type),
+            }
 
             // Mark smaller for removal
             toRemove.push(smallerIdx)
@@ -1940,6 +2044,15 @@ export function StarField() {
           body.swallowPulse *= 0.93
         } else if (body.type === "blackhole") {
           body.swallowPulse = 0
+        }
+
+        // Decay collision scar
+        if (body.collisionScar) {
+          const decayRate = body.collisionScar.type === "heat" ? 0.012 : body.collisionScar.type === "flare" ? 0.008 : 0.006
+          body.collisionScar.intensity -= decayRate * dt
+          if (body.collisionScar.intensity <= 0) {
+            body.collisionScar = undefined
+          }
         }
       }
 
@@ -2105,6 +2218,101 @@ export function StarField() {
           ctx.fill()
         }
 
+        // --- Collision Scar Overlay ---
+        if (body.collisionScar && body.collisionScar.intensity > 0 && body.type !== "blackhole") {
+          const scar = body.collisionScar
+          const si = scar.intensity
+
+          if (scar.type === "flare") {
+            // Solar flare: a bright arc eruption on the impact side
+            const flareAngle = scar.angle - body.rotation // compensate for body rotation
+            const flareLen = r * (1.8 + si * 1.2)
+            const flareTip = r * 0.6
+
+            ctx.save()
+            ctx.rotate(flareAngle)
+
+            // Outer flare glow
+            const flareGrad = ctx.createRadialGradient(r * 0.8, 0, 0, r * 0.8, 0, flareLen)
+            flareGrad.addColorStop(0, `rgba(255, 255, 255, ${si * 0.7})`)
+            flareGrad.addColorStop(0.3, `rgba(255, 200, 80, ${si * 0.5})`)
+            flareGrad.addColorStop(0.7, `rgba(${scar.color}, ${si * 0.3})`)
+            flareGrad.addColorStop(1, `rgba(${scar.color}, 0)`)
+            ctx.beginPath()
+            ctx.moveTo(r * 0.6, -flareTip * 0.3)
+            ctx.quadraticCurveTo(r + flareLen * 0.6, -flareTip * 0.6, r + flareLen * 0.3, -flareTip * 0.1)
+            ctx.quadraticCurveTo(r + flareLen, 0, r + flareLen * 0.3, flareTip * 0.1)
+            ctx.quadraticCurveTo(r + flareLen * 0.6, flareTip * 0.6, r * 0.6, flareTip * 0.3)
+            ctx.closePath()
+            ctx.fillStyle = flareGrad
+            ctx.fill()
+
+            // Hot white base glow at impact point
+            const baseGrad = ctx.createRadialGradient(r * 0.7, 0, 0, r * 0.7, 0, r * 0.6)
+            baseGrad.addColorStop(0, `rgba(255, 255, 255, ${si * 0.6})`)
+            baseGrad.addColorStop(1, `rgba(255, 200, 100, 0)`)
+            ctx.beginPath()
+            ctx.arc(r * 0.7, 0, r * 0.6, 0, Math.PI * 2)
+            ctx.fillStyle = baseGrad
+            ctx.fill()
+
+            ctx.restore()
+          } else if (scar.type === "crater") {
+            // Impact crater: glowing spot with radiating cracks
+            const craterAngle = scar.angle - body.rotation
+            const craterDist = r * 0.55
+            const craterX = Math.cos(craterAngle) * craterDist
+            const craterY = Math.sin(craterAngle) * craterDist
+            const craterR = r * 0.35 * (0.5 + si * 0.5)
+
+            // Crater glow: transitions from white-hot to orange to dark
+            const heatR = Math.round(255 * Math.min(si * 1.5, 1))
+            const heatG = Math.round(200 * si * si)
+            const heatB = Math.round(60 * si * si * si)
+
+            const craterGrad = ctx.createRadialGradient(craterX, craterY, 0, craterX, craterY, craterR * 2)
+            craterGrad.addColorStop(0, `rgba(${heatR}, ${heatG}, ${heatB}, ${si * 0.8})`)
+            craterGrad.addColorStop(0.4, `rgba(${scar.color}, ${si * 0.4})`)
+            craterGrad.addColorStop(1, `rgba(${scar.color}, 0)`)
+            ctx.beginPath()
+            ctx.arc(craterX, craterY, craterR * 2, 0, Math.PI * 2)
+            ctx.fillStyle = craterGrad
+            ctx.fill()
+
+            // Radiating fracture lines
+            if (tier !== "low" && si > 0.3) {
+              ctx.save()
+              ctx.globalAlpha = si * 0.6
+              const crackCount = 5
+              for (let c = 0; c < crackCount; c++) {
+                const crackAngle = craterAngle + ((c / crackCount) - 0.5) * Math.PI * 0.8
+                const crackLen = craterR * (1.2 + Math.random() * 0.8)
+                ctx.beginPath()
+                ctx.moveTo(craterX, craterY)
+                const endX = craterX + Math.cos(crackAngle) * crackLen
+                const endY = craterY + Math.sin(crackAngle) * crackLen
+                const midX = (craterX + endX) / 2 + (Math.random() - 0.5) * craterR * 0.3
+                const midY = (craterY + endY) / 2 + (Math.random() - 0.5) * craterR * 0.3
+                ctx.quadraticCurveTo(midX, midY, endX, endY)
+                ctx.strokeStyle = `rgba(${heatR}, ${heatG}, ${heatB}, ${si * 0.5})`
+                ctx.lineWidth = Math.max(0.5, r * 0.03 * si)
+                ctx.stroke()
+              }
+              ctx.restore()
+            }
+          } else {
+            // Heat glow: whole body brightens
+            const heatGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3)
+            heatGrad.addColorStop(0, `rgba(255, 220, 150, ${si * 0.5})`)
+            heatGrad.addColorStop(0.5, `rgba(${scar.color}, ${si * 0.3})`)
+            heatGrad.addColorStop(1, `rgba(${scar.color}, 0)`)
+            ctx.beginPath()
+            ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2)
+            ctx.fillStyle = heatGrad
+            ctx.fill()
+          }
+        }
+
         ctx.restore()
       }
 
@@ -2232,6 +2440,47 @@ export function StarField() {
         ctx.arc(particle.x, particle.y, currentSize * 0.5, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(255, 255, 255, ${a})`
         ctx.fill()
+
+        return true
+      })
+
+      // Shockwave Rings
+      shockwavesRef.current = shockwavesRef.current.filter(ring => {
+        ring.life += dt
+        if (ring.life >= ring.maxLife) return false
+
+        const t = ring.life / ring.maxLife
+        ring.radius = ring.maxRadius * (0.3 + t * 0.7) // expand from 30% to 100%
+        const fadeAlpha = (1 - t * t) * ring.intensity // quadratic fade-out
+
+        // Outer ring glow
+        ctx.beginPath()
+        ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2)
+        ctx.strokeStyle = `rgba(${ring.color}, ${fadeAlpha * 0.6})`
+        ctx.lineWidth = Math.max(ring.maxRadius * 0.08 * (1 - t), 0.5)
+        ctx.stroke()
+
+        // Inner bright edge
+        if (t < 0.5) {
+          ctx.beginPath()
+          ctx.arc(ring.x, ring.y, ring.radius * 0.95, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(255, 255, 255, ${fadeAlpha * 0.4 * (1 - t * 2)})`
+          ctx.lineWidth = Math.max(ring.maxRadius * 0.04 * (1 - t), 0.3)
+          ctx.stroke()
+        }
+
+        // Soft fill glow in the early phase
+        if (t < 0.3) {
+          const fillAlpha = fadeAlpha * 0.12 * (1 - t / 0.3)
+          const fillGrad = ctx.createRadialGradient(ring.x, ring.y, 0, ring.x, ring.y, ring.radius)
+          fillGrad.addColorStop(0, `rgba(255, 255, 255, ${fillAlpha})`)
+          fillGrad.addColorStop(0.5, `rgba(${ring.color}, ${fillAlpha * 0.5})`)
+          fillGrad.addColorStop(1, `rgba(${ring.color}, 0)`)
+          ctx.beginPath()
+          ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2)
+          ctx.fillStyle = fillGrad
+          ctx.fill()
+        }
 
         return true
       })
