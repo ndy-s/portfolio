@@ -113,4 +113,4 @@ The site supports both light and dark modes using CSS variables, but it defaults
 
 ## License
 
-MIT (c) Hendy Saputra
+MIT
