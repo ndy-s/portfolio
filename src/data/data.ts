@@ -63,11 +63,11 @@ export type Project = {
 
 export const CONTENT = {
   subtitle: "Software Engineer",
-  about: `I've always been drawn to taking things apart to understand how they work, then rebuilding them until they made sense. That curiosity shaped my path into backend engineering and system architecture, where I focus on turning ambiguous problems into clean, reliable solutions.
-  
-Over the years, I've built production-grade systems across core banking (loan origination), payroll, and expense and fixed-asset accounting for insurance, a campus-wide platform, and AI-focused projects including RLHF work for AI coding assistants. I move comfortably across the stack, but what excites me most is the space where software engineering meets machine learning, and the possibilities that emerge when the two intersect.
+  about: `I've always been drawn to taking things apart to understand how they work, then rebuilding them until they made sense. That curiosity shaped my path into backend engineering and system architecture, where I turn ambiguous problems into clean, reliable solutions.
 
-Beyond the screen, I'm a quiet observer of how the world works, drawn to space (which inspired this site's warp-speed theme), travel, and time spent in nature. I also make art and build small open-source tools whenever I can find the time.`,
+Over the years I've built production-grade systems across core banking (loan origination), payroll and accounting (expense and fixed-asset tracking) for an insurance client, a campus-wide platform, and AI-focused projects including RLHF work for AI coding assistants. I move comfortably across the stack, but what excites me most is where software engineering meets machine learning, and what becomes possible when the two intersect.
+
+Beyond the screen, I'm a quiet observer of how the world works, drawn to space (which inspired this site's warp-speed theme), travel, and time in nature. I also make art and build small open-source tools whenever I can find the time.`,
   sections: {
     services: {
       title: "Freelance Services",
